@@ -1930,18 +1930,42 @@ html { overflow-x: clip; }
   const callBackdrop = document.getElementById('callCaptureBackdrop');
 
   window.openCallModal = function() {
+    // Always reset button state on open so returning visitors see the form fresh
+    var btn = document.getElementById('callSubmitBtn');
+    var btnText = document.getElementById('callSubmitText');
+    if (btn) { btn.disabled = false; }
+    if (btnText) { btnText.textContent = 'Save & Call Now'; }
+    // Also reset form fields
+    var form = document.getElementById('callCaptureForm');
+    if (form) { form.reset(); }
+    var phoneErr = document.getElementById('callPhoneError');
+    if (phoneErr) { phoneErr.style.display = 'none'; }
     callBackdrop.style.display = 'flex';
     document.body.style.overflow = 'hidden';
+    // Push a fake history state so back button closes modal instead of leaving site
+    history.pushState({ callModalOpen: true }, '');
     setTimeout(function(){ document.getElementById('callName').focus(); }, 100);
   };
-  window.closeCallModal = function() {
+  window.closeCallModal = function(skipHistory) {
     callBackdrop.style.display = 'none';
     document.body.style.overflow = '';
+    // If closed programmatically (not by back button), go back to remove the pushed state
+    if (!skipHistory && history.state && history.state.callModalOpen) {
+      history.back();
+    }
   };
   window.skipAndCall = function() {
     closeCallModal();
-    window.location.href = 'tel:+917508058594';
+    setTimeout(function(){ window.location.href = 'tel:+917508058594'; }, 50);
   };
+
+  // Intercept browser back button
+  window.addEventListener('popstate', function(e) {
+    if (callBackdrop.style.display === 'flex') {
+      // Close modal only — do not navigate away
+      closeCallModal(true);
+    }
+  });
 
   callBackdrop.addEventListener('click', function(e) {
     if (e.target === callBackdrop) closeCallModal();
