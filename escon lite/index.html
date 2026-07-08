@@ -1776,14 +1776,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         form.style.display = 'none';
         successBox.style.display = 'block';
 
-        // GTM: site visit form conversion
-        window.dataLayer = window.dataLayer || [];
-        dataLayer.push({
-          event: 'site_visit_form_submit',
-          form_name: 'site_visit',
-          unit_type: leadData.unitType
-        });
-
         // Send WhatsApp notification to sales team
         const unitLabel = document.getElementById('unitType').options[document.getElementById('unitType').selectedIndex]?.text || 'Not specified';
         const dateVal  = leadData.visitDate  ? leadData.visitDate  : 'Not specified';
@@ -1937,14 +1929,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       );
       window.open('https://wa.me/917508058594?text=' + msg, '_blank');
 
-      // GTM: price list lead conversion
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        event: 'price_list_form_submit',
-        form_name: 'price_list',
-        unit_type: unit
-      });
-
       // Show success
       priceLeadForm.style.display = 'none';
       document.getElementById('priceFormSuccess').style.display = 'block';
@@ -1957,10 +1941,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const callBackdrop = document.getElementById('callCaptureBackdrop');
 
   window.openCallModal = function() {
-    // GTM: call button clicked (modal opened)
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({ event: 'call_button_click' });
-
     // Always reset button state on open so returning visitors see the form fresh
     var btn = document.getElementById('callSubmitBtn');
     var btnText = document.getElementById('callSubmitText');
@@ -2054,13 +2034,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }).catch(function(){});
     }
 
-    // GTM: call capture form conversion
-    window.dataLayer = window.dataLayer || [];
-    dataLayer.push({
-      event: 'call_capture_form_submit',
-      form_name: 'call_capture'
-    });
-
     closeCallModal();
     window.location.href = 'tel:+917508058594';
   });
@@ -2090,15 +2063,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       document.getElementById('brochureSubmitBtn').disabled = true;
       document.getElementById('brochureSubmitBtnText').textContent = 'Opening WhatsApp…';
       window.open('https://wa.me/917508058594?text=' + msg, '_blank');
-
-      // GTM: brochure request conversion
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        event: 'brochure_request_submit',
-        form_name: 'brochure_request',
-        unit_type: unit
-      });
-
       // Show success message
       brochureRequestForm.style.display = 'none';
       document.getElementById('brochureFormSuccess').style.display = 'block';
