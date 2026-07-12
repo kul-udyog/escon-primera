@@ -18,6 +18,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <meta name="author" content="Malwa Projects Pvt. Ltd.">
 <link rel="canonical" href="https://www.escon-primera.com/">
 
+<!-- Preload hero image (LCP element) so it starts fetching immediately, with mobile/desktop variants -->
+<link rel="preload" as="image" href="images/hero-building.jpg" media="(min-width: 768px)" fetchpriority="high">
+<link rel="preload" as="image" href="images/hero-building-mobile.jpg" media="(max-width: 767px)" fetchpriority="high">
+
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.escon-primera.com/">
@@ -959,7 +963,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="row g-4 align-items-center">
           <div class="col-lg-7">
             <div class="plan-visual">
-              <img src="images/floorplan-2bhk.jpg" alt="2 BHK floor plan, Phase 1, Escon Primera Zirakpur — 1,305 sq.ft. with 2 bedrooms, store room, drawing/dining, and kitchen" loading="lazy">
+              <img src="images/floorplan-2bhk.jpg" decoding="async" alt="2 BHK floor plan, Phase 1, Escon Primera Zirakpur — 1,305 sq.ft. with 2 bedrooms, store room, drawing/dining, and kitchen" loading="lazy">
             </div>
           </div>
           <div class="col-lg-5">
@@ -981,7 +985,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="row g-4 align-items-center">
           <div class="col-lg-7">
             <div class="plan-visual">
-              <img src="images/floorplan-3bhk-phase1.jpg" alt="3 BHK floor plan, Phase 1, Escon Primera Zirakpur — 1,550 sq.ft. with 3 bedrooms, drawing/dining, and kitchen" loading="lazy">
+              <img src="images/floorplan-3bhk-phase1.jpg" decoding="async" alt="3 BHK floor plan, Phase 1, Escon Primera Zirakpur — 1,550 sq.ft. with 3 bedrooms, drawing/dining, and kitchen" loading="lazy">
             </div>
           </div>
           <div class="col-lg-5">
@@ -1002,7 +1006,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="row g-4 align-items-center">
           <div class="col-lg-7">
             <div class="plan-visual">
-              <img src="images/floorplan-3bhk-phase2.jpg" alt="3 BHK floor plan, Phase 2, Escon Primera Zirakpur — 2,050 sq.ft. with 3 bedrooms, puja area, drawing/dining, and kitchen" loading="lazy">
+              <img src="images/floorplan-3bhk-phase2.jpg" decoding="async" alt="3 BHK floor plan, Phase 2, Escon Primera Zirakpur — 2,050 sq.ft. with 3 bedrooms, puja area, drawing/dining, and kitchen" loading="lazy">
             </div>
           </div>
           <div class="col-lg-5">
@@ -1023,7 +1027,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="row g-4 align-items-center">
           <div class="col-lg-7">
             <div class="plan-visual">
-              <img src="images/floorplan-3plus1bhk.jpg" alt="3+1 BHK floor plan, Phase 1, Escon Primera Zirakpur — 2,450 sq.ft. with 3 bedrooms, servant room, store/dress room, drawing/dining, and kitchen" loading="lazy">
+              <img src="images/floorplan-3plus1bhk.jpg" decoding="async" alt="3+1 BHK floor plan, Phase 1, Escon Primera Zirakpur — 2,450 sq.ft. with 3 bedrooms, servant room, store/dress room, drawing/dining, and kitchen" loading="lazy">
             </div>
           </div>
           <div class="col-lg-5">
@@ -1264,7 +1268,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="col-lg-6">
         <div style="border:1px solid var(--stone-line);border-radius:var(--radius);overflow:hidden;">
-          <img src="images/location-map.jpg" alt="Location map of Escon Primera, Zirakpur — showing proximity to Chandigarh Airport, PR-7, schools, hospitals and landmarks" style="width:100%;height:auto;display:block;">
+          <img src="images/location-map.jpg" alt="Location map of Escon Primera, Zirakpur — showing proximity to Chandigarh Airport, PR-7, schools, hospitals and landmarks" loading="lazy" decoding="async" style="width:100%;height:auto;display:block;">
         </div>
       </div>
     </div>
@@ -1286,7 +1290,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="col-md-6">
         <div class="gallery-item tall">
           <div class="gallery-art" style="background:#0a0a1a;">
-            <img src="images/gallery-tower-facade.jpg" alt="Escon Primera towers at night — Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+            <img src="images/gallery-tower-facade.jpg" loading="lazy" decoding="async" alt="Escon Primera towers at night — Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
           </div>
           <div class="gallery-overlay"><span>Tower Facade, Night</span></div>
         </div>
@@ -1296,7 +1300,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="col-12">
             <div class="gallery-item">
               <div class="gallery-art" style="background:#1a1a2e;">
-                <img src="images/gallery-culture-club.jpg" alt="Culture The Club — Escon Primera clubhouse at night" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                <img src="images/gallery-culture-club.jpg" loading="lazy" decoding="async" alt="Culture The Club — Escon Primera clubhouse at night" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
               </div>
               <div class="gallery-overlay"><span>Culture — The Club</span></div>
             </div>
@@ -1304,7 +1308,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="col-6">
             <div class="gallery-item">
               <div class="gallery-art" style="background:#1a1a1a;">
-                <img src="images/gallery-master-bedroom.jpg" alt="Master Bedroom Interior — Escon Primera, Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                <img src="images/gallery-master-bedroom.jpg" loading="lazy" decoding="async" alt="Master Bedroom Interior — Escon Primera, Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
               </div>
               <div class="gallery-overlay"><span>Master Bedroom</span></div>
             </div>
@@ -1312,7 +1316,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div class="col-6">
             <div class="gallery-item">
               <div class="gallery-art" style="background:#1a1a1a;">
-                <img src="images/gallery-living-room.jpg" alt="Living Room Interior — Escon Primera, Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+                <img src="images/gallery-living-room.jpg" loading="lazy" decoding="async" alt="Living Room Interior — Escon Primera, Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
               </div>
               <div class="gallery-overlay"><span>Living Room Interior</span></div>
             </div>
@@ -1322,7 +1326,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="col-md-4">
         <div class="gallery-item">
           <div class="gallery-art" style="background:#1a1a1a;">
-            <img src="images/gallery-clubhouse-lounge.jpg" alt="Clubhouse Lounge — Escon Primera, Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+            <img src="images/gallery-clubhouse-lounge.jpg" loading="lazy" decoding="async" alt="Clubhouse Lounge — Escon Primera, Zirakpur" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
           </div>
           <div class="gallery-overlay"><span>Clubhouse Lounge</span></div>
         </div>
@@ -1330,7 +1334,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="col-md-4">
         <div class="gallery-item">
           <div class="gallery-art" style="background:#1a2e1a;">
-            <img src="images/gallery-green-park.jpg" alt="Elevated Green Park — Escon Primera landscaped garden with fountain" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+            <img src="images/gallery-green-park.jpg" loading="lazy" decoding="async" alt="Elevated Green Park — Escon Primera landscaped garden with fountain" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
           </div>
           <div class="gallery-overlay"><span>Elevated Green Park</span></div>
         </div>
@@ -1338,7 +1342,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="col-md-4">
         <div class="gallery-item">
           <div class="gallery-art" style="background:#1a2a1a;">
-            <img src="images/gallery-entrance-plaza.jpg" alt="Entrance Plaza — Escon Primera grand entrance with green walls" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
+            <img src="images/gallery-entrance-plaza.jpg" loading="lazy" decoding="async" alt="Entrance Plaza — Escon Primera grand entrance with green walls" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;">
           </div>
           <div class="gallery-overlay"><span>Grand Entrance Plaza</span></div>
         </div>
@@ -1568,7 +1572,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container container-xl">
     <div class="row g-4">
       <div class="col-lg-4">
-        <img src="images/logo-lockup.jpg" alt="Escon Primera" class="footer-logo-img">
+        <img src="images/logo-lockup.jpg" alt="Escon Primera" class="footer-logo-img" loading="lazy" decoding="async">
         <p style="max-width:320px;">Buy 2, 3 &amp; 3+1 BHK flats in Zirakpur on PR-7, Airport Road. Escon Primera — a RERA-registered, debt-free gated township by Malwa Projects, built with Mivan technology.</p>
 
       </div>
