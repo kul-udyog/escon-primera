@@ -810,6 +810,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li class="nav-item"><a class="nav-link nav-link-custom" href="#amenities">Amenities</a></li>
         <li class="nav-item"><a class="nav-link nav-link-custom" href="#location">Location</a></li>
         <li class="nav-item"><a class="nav-link nav-link-custom" href="#gallery">Gallery</a></li>
+        <li class="nav-item"><a class="nav-link nav-link-custom" href="#testimonials">Testimonials</a></li>
         <li class="nav-item"><a class="nav-link nav-link-custom" href="#faq">FAQ</a></li>
         <li class="nav-item mt-2 mt-lg-0 ms-lg-2">
           <a href="#visit" class="btn btn-brass w-100">Book Site Visit</a>
@@ -1354,6 +1355,221 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <!-- ============================================================
+     TESTIMONIALS
+============================================================ -->
+<style>
+.testimonial-card{
+  background:#fff;
+  border:1px solid var(--stone-line);
+  border-radius:var(--radius);
+  padding:2rem 1.8rem;
+  height:100%;
+  position:relative;
+}
+.testimonial-quote-mark{
+  font-family:'Cormorant',serif;
+  font-size:3.5rem;
+  line-height:1;
+  color:var(--brass);
+  opacity:0.5;
+  display:block;
+  margin-bottom:0.4rem;
+}
+.testimonial-text{
+  font-size:0.94rem;
+  line-height:1.75;
+  color:var(--pine-soft);
+  margin-bottom:1.4rem;
+}
+.testimonial-author{
+  font-family:'Cormorant',serif;
+  font-weight:600;
+  font-size:1.1rem;
+  color:var(--pine);
+  display:block;
+}
+.testimonial-source{
+  font-family:'Inter',sans-serif;
+  font-size:0.72rem;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  color:var(--stone);
+  margin-top:0.2rem;
+}
+/* Mobile carousel — desktop keeps the 4-column grid, mobile gets a single auto-rotating card */
+.testimonial-carousel{display:none;}
+.testimonial-viewport{
+  overflow:hidden;
+  position:relative;
+}
+.testimonial-track{
+  display:flex;
+  transition:transform 0.6s cubic-bezier(0.65,0,0.35,1);
+}
+.testimonial-slide{
+  flex:0 0 100%;
+  min-width:0;
+  box-sizing:border-box;
+  padding:0 2px;
+}
+.testimonial-dots{
+  display:flex;
+  justify-content:center;
+  gap:0.5rem;
+  margin-top:1.4rem;
+}
+.testimonial-dot{
+  width:7px;height:7px;
+  border-radius:50%;
+  background:var(--stone-line);
+  border:none;
+  padding:0;
+  transition:background 0.3s ease,transform 0.3s ease;
+}
+.testimonial-dot.is-active{
+  background:var(--brass);
+  transform:scale(1.25);
+}
+@media (max-width:767px){
+  .testimonial-grid{display:none;}
+  .testimonial-carousel{display:block;}
+}
+</style>
+<section class="section-pad" id="testimonials" style="background:var(--ivory-dim);">
+  <div class="container container-xl">
+    <div class="section-head text-center">
+      <div class="eyebrow">Testimonials</div>
+      <h2>What homebuyers are saying<br>about Escon Primera.</h2>
+      <div class="plan-line mx-auto"></div>
+    </div>
+
+    <div class="row g-4 testimonial-grid">
+      <div class="col-md-6 col-lg-3">
+        <div class="testimonial-card">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">Escon Primera is one of the best residential projects in the Zirakpur vicinity. It uses Mivan construction technology and the overall build quality is really good. I also like the floor plans — the layout considers privacy with semi-public openings, and there's everything from ample parking to green spaces, with some flats offering two car parks.</p>
+          <span class="testimonial-author">Rahul Garg</span>
+          <span class="testimonial-source">Google Review</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="testimonial-card">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">Recommended by a friend of mine. Location and accessibility score 100/100, loaded with great, worthwhile features. I strongly recommend the group — I went through their financial credibility and everything else too. For a home buyer, it's a definite go.</p>
+          <span class="testimonial-author">Harinder Mehra</span>
+          <span class="testimonial-source">Google Review</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="testimonial-card">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">One of the best residential projects on Airport Road, PR-7 — this project uses Mivan construction technology and is being built by one of the most trusted builders in the Tricity. Its location and features make it exclusive in every respect. Recommended for both self-use and investment.</p>
+          <span class="testimonial-author">Piush Sumroy</span>
+          <span class="testimonial-source">Google Review</span>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="testimonial-card">
+          <span class="testimonial-quote-mark">&ldquo;</span>
+          <p class="testimonial-text">When you invest in real estate, location matters most, and this project has everything you'd want as a first priority — connectivity to every state and local place. Everything, from market to college to hospital, is planned strategically and near the property.</p>
+          <span class="testimonial-author">Sanjay Kumar</span>
+          <span class="testimonial-source">Google Review</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-carousel">
+      <div class="testimonial-viewport">
+        <div class="testimonial-track" id="testimonialTrack">
+          <div class="testimonial-slide">
+            <div class="testimonial-card">
+              <span class="testimonial-quote-mark">&ldquo;</span>
+              <p class="testimonial-text">Escon Primera is one of the best residential projects in the Zirakpur vicinity. It uses Mivan construction technology and the overall build quality is really good. I also like the floor plans — the layout considers privacy with semi-public openings, and there's everything from ample parking to green spaces, with some flats offering two car parks.</p>
+              <span class="testimonial-author">Rahul Garg</span>
+              <span class="testimonial-source">Google Review</span>
+            </div>
+          </div>
+          <div class="testimonial-slide">
+            <div class="testimonial-card">
+              <span class="testimonial-quote-mark">&ldquo;</span>
+              <p class="testimonial-text">Recommended by a friend of mine. Location and accessibility score 100/100, loaded with great, worthwhile features. I strongly recommend the group — I went through their financial credibility and everything else too. For a home buyer, it's a definite go.</p>
+              <span class="testimonial-author">Harinder Mehra</span>
+              <span class="testimonial-source">Google Review</span>
+            </div>
+          </div>
+          <div class="testimonial-slide">
+            <div class="testimonial-card">
+              <span class="testimonial-quote-mark">&ldquo;</span>
+              <p class="testimonial-text">One of the best residential projects on Airport Road, PR-7 — this project uses Mivan construction technology and is being built by one of the most trusted builders in the Tricity. Its location and features make it exclusive in every respect. Recommended for both self-use and investment.</p>
+              <span class="testimonial-author">Piush Sumroy</span>
+              <span class="testimonial-source">Google Review</span>
+            </div>
+          </div>
+          <div class="testimonial-slide">
+            <div class="testimonial-card">
+              <span class="testimonial-quote-mark">&ldquo;</span>
+              <p class="testimonial-text">When you invest in real estate, location matters most, and this project has everything you'd want as a first priority — connectivity to every state and local place. Everything, from market to college to hospital, is planned strategically and near the property.</p>
+              <span class="testimonial-author">Sanjay Kumar</span>
+              <span class="testimonial-source">Google Review</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-dots" id="testimonialDots">
+        <button class="testimonial-dot is-active" aria-label="Show testimonial 1"></button>
+        <button class="testimonial-dot" aria-label="Show testimonial 2"></button>
+        <button class="testimonial-dot" aria-label="Show testimonial 3"></button>
+        <button class="testimonial-dot" aria-label="Show testimonial 4"></button>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+(function(){
+  var track = document.getElementById('testimonialTrack');
+  if(!track) return;
+  var slides = track.querySelectorAll('.testimonial-slide');
+  var dots = document.querySelectorAll('#testimonialDots .testimonial-dot');
+  var index = 0;
+  var total = slides.length;
+  var timer = null;
+
+  function goTo(i){
+    index = (i + total) % total;
+    track.style.transform = 'translateX(-' + (index * 100) + '%)';
+    dots.forEach(function(d, di){ d.classList.toggle('is-active', di === index); });
+  }
+  function next(){ goTo(index + 1); }
+  function startAutoplay(){
+    stopAutoplay();
+    timer = setInterval(next, 4500);
+  }
+  function stopAutoplay(){
+    if(timer){ clearInterval(timer); timer = null; }
+  }
+
+  dots.forEach(function(dot, di){
+    dot.addEventListener('click', function(){
+      goTo(di);
+      startAutoplay();
+    });
+  });
+
+  // Pause while the section is off-screen, resume when visible (saves cycles, avoids jarring jumps)
+  if('IntersectionObserver' in window){
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(entry.isIntersecting){ startAutoplay(); } else { stopAutoplay(); }
+      });
+    }, {threshold:0.3});
+    observer.observe(document.getElementById('testimonials'));
+  } else {
+    startAutoplay();
+  }
+})();
+</script>
+
+<!-- ============================================================
      SITE VISIT FORM
 ============================================================ -->
 <section class="section-pad form-section" id="visit">
@@ -1584,6 +1800,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <li class="mb-2"><a href="#brochure">Brochure</a></li>
           <li class="mb-2"><a href="#amenities">Amenities</a></li>
           <li class="mb-2"><a href="#gallery">Gallery</a></li>
+          <li class="mb-2"><a href="#testimonials">Testimonials</a></li>
           <li class="mb-2"><a href="#faq">FAQ</a></li>
         </ul>
       </div>
