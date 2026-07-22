@@ -1120,7 +1120,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           <div id="brochureFormSuccess" style="display:none;text-align:center;padding:1.5rem 0;">
             <i class="bi bi-check-circle" style="font-size:2.5rem;color:#25D366;"></i>
             <h4 class="font-display mt-3" style="font-size:1.3rem;">Request Received!</h4>
-            <p style="color:var(--stone);font-size:0.9rem;margin-bottom:0;">Our team will send you the brochure on WhatsApp shortly. You can also reach us directly at <a href="tel:+917508058594" style="color:var(--brass);">+91 75080 58594</a>.</p>
+            <p style="color:var(--stone);font-size:0.9rem;margin-bottom:0;">Our team will send you the brochure on WhatsApp shortly. You can also reach us directly at <a href="#" onclick="openCallModal();return false;" style="color:var(--brass);">+91 75080 58594</a>.</p>
           </div>
         </div>
 
@@ -1717,7 +1717,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </h3>
             <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
               <div class="accordion-body" style="font-size:0.92rem;color:var(--stone);line-height:1.7;">
-                Prices are available on request and depend on unit type, floor, and current offers. Call or WhatsApp <a href="tel:+917508058594" style="color:var(--brass);">+91 75080 58594</a> for the current rate list. GST, stamp duty, and registration are charged extra as applicable.
+                Prices are available on request and depend on unit type, floor, and current offers. Call or WhatsApp <a href="#" onclick="openCallModal();return false;" style="color:var(--brass);">+91 75080 58594</a> for the current rate list. GST, stamp duty, and registration are charged extra as applicable.
               </div>
             </div>
           </div>
@@ -1782,7 +1782,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </h3>
             <div id="faq8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
               <div class="accordion-body" style="font-size:0.92rem;color:var(--stone);line-height:1.7;">
-                Fill in the site visit form on this page, or call/WhatsApp <a href="tel:+917508058594" style="color:var(--brass);">+91 75080 58594</a>. Our team will confirm your slot within the hour. Complimentary pickup from nearby landmarks is available on request.
+                Fill in the site visit form on this page, or call/WhatsApp <a href="#" onclick="openCallModal();return false;" style="color:var(--brass);">+91 75080 58594</a>. Our team will confirm your slot within the hour. Complimentary pickup from nearby landmarks is available on request.
               </div>
             </div>
           </div>
@@ -1819,7 +1819,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <div class="col-lg-2 col-6">
         <h5 style="font-size:1.1rem;">Contact</h5>
         <ul class="list-unstyled">
-          <li class="mb-2"><a href="tel:+917508058594">+91 75080 58594</a></li>
+          <li class="mb-2"><a href="#" onclick="openCallModal();return false;">+91 75080 58594</a></li>
           <li class="mb-2 text-muted">PR-7, Chandigarh International Airport Road,<br>Zirakpur, Punjab 140603</li>
         </ul>
       </div>
@@ -1862,8 +1862,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- ============================================================
      FLOATING ELEMENTS
 ============================================================ -->
-<a href="https://wa.me/917508058594?text=Hi%2C%20I%27m%20interested%20in%20Escon%20Primera%2C%20Zirakpur.%20Please%20share%20more%20details."
-   target="_blank" rel="noopener" class="whatsapp-float" aria-label="Chat with us on WhatsApp">
+<a href="#" onclick="openCallModal('whatsapp');return false;" class="whatsapp-float" aria-label="Chat with us on WhatsApp">
   <i class="bi bi-whatsapp"></i>
 </a>
 
@@ -1883,24 +1882,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <i class="bi bi-x"></i>
     </button>
     <span class="eyebrow">Escon Primera · Sales Desk</span>
-    <h4 class="font-display mt-1 mb-1" style="font-size:1.5rem;">Before we connect,<br>share your details.</h4>
+    <h4 class="font-display mt-1 mb-1" id="callModalTitle" style="font-size:1.5rem;">Before we connect,<br>share your details.</h4>
     <div class="plan-line"></div>
-    <p style="font-size:0.87rem;color:var(--stone);margin-bottom:1.2rem;">So we can follow up after the call with pricing and floor plans.</p>
+    <p style="font-size:0.87rem;color:var(--stone);margin-bottom:1.2rem;">So we can follow up with pricing and floor plans.</p>
     <form id="callCaptureForm" autocomplete="on" novalidate>
       <div class="mb-3">
         <label class="form-label-custom" for="callName">Your Name <span style="color:var(--brass);">*</span></label>
         <input type="text" class="form-control form-control-custom" id="callName" autocomplete="name" placeholder="Full name" required>
       </div>
       <div class="mb-3">
-        <label class="form-label-custom" for="callPhone">Your WhatsApp Number <span style="color:var(--brass);">*</span></label>
+        <label class="form-label-custom" for="callPhone" id="callPhoneLabel">Your WhatsApp Number <span style="color:var(--brass);">*</span></label>
         <input type="tel" class="form-control form-control-custom" id="callPhone" autocomplete="tel" placeholder="10-digit mobile number" maxlength="10" pattern="[6-9][0-9]{9}" required>
         <div id="callPhoneError" style="display:none;font-size:0.75rem;color:#c0392b;margin-top:0.25rem;"></div>
       </div>
       <button type="submit" class="btn btn-brass w-100 py-3" id="callSubmitBtn">
-        <i class="bi bi-telephone-fill me-2"></i><span id="callSubmitText">Save &amp; Call Now</span>
-      </button>
-      <button type="button" class="btn w-100 mt-2" style="font-size:0.8rem;color:var(--stone);background:none;border:none;" onclick="skipAndCall()">
-        Skip and call directly
+        <i class="bi bi-telephone-fill me-2" id="callSubmitIcon"></i><span id="callSubmitText">Save &amp; Call Now</span>
       </button>
       <p class="text-center mt-2 mb-0" style="font-size:0.72rem;color:var(--stone);">By submitting, you agree to be contacted by our sales team.</p>
     </form>
@@ -2192,16 +2188,32 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   // ============================================================
   const callBackdrop = document.getElementById('callCaptureBackdrop');
 
-  window.openCallModal = function() {
-    // GTM: call button clicked (modal opened)
+  var callModalAction = 'call'; // 'call' or 'whatsapp' — set by whichever trigger opened the modal
+
+  window.openCallModal = function(action) {
+    callModalAction = (action === 'whatsapp') ? 'whatsapp' : 'call';
+
+    // GTM: contact button clicked (modal opened)
     window.dataLayer = window.dataLayer || [];
-    dataLayer.push({ event: 'call_button_click' });
+    dataLayer.push({ event: (callModalAction === 'whatsapp') ? 'whatsapp_button_click' : 'call_button_click' });
+
+    // Update modal copy/labels for the relevant action
+    var titleEl = document.getElementById('callModalTitle');
+    var iconEl = document.getElementById('callSubmitIcon');
+    var btnText = document.getElementById('callSubmitText');
+    if (callModalAction === 'whatsapp') {
+      if (titleEl) { titleEl.innerHTML = 'Before we chat,<br>share your details.'; }
+      if (iconEl) { iconEl.setAttribute('class', 'bi bi-whatsapp me-2'); }
+      if (btnText) { btnText.textContent = 'Save & Chat on WhatsApp'; }
+    } else {
+      if (titleEl) { titleEl.innerHTML = 'Before we connect,<br>share your details.'; }
+      if (iconEl) { iconEl.setAttribute('class', 'bi bi-telephone-fill me-2'); }
+      if (btnText) { btnText.textContent = 'Save & Call Now'; }
+    }
 
     // Always reset button state on open so returning visitors see the form fresh
     var btn = document.getElementById('callSubmitBtn');
-    var btnText = document.getElementById('callSubmitText');
     if (btn) { btn.disabled = false; }
-    if (btnText) { btnText.textContent = 'Save & Call Now'; }
     // Also reset form fields
     var form = document.getElementById('callCaptureForm');
     if (form) { form.reset(); }
@@ -2220,10 +2232,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     if (!skipHistory && history.state && history.state.callModalOpen) {
       history.back();
     }
-  };
-  window.skipAndCall = function() {
-    closeCallModal();
-    setTimeout(function(){ window.location.href = 'tel:+917508058594'; }, 50);
   };
 
   // Intercept browser back button
@@ -2272,14 +2280,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     const btn = document.getElementById('callSubmitBtn');
     btn.disabled = true;
-    document.getElementById('callSubmitText').textContent = 'Connecting…';
+    document.getElementById('callSubmitText').textContent = (callModalAction === 'whatsapp') ? 'Opening WhatsApp…' : 'Connecting…';
 
     const leadData = {
       name: nameEl.value.trim(), phone: phoneEl.value.trim(),
       email: '', unitType: '', visitDate: '', visitTime: '',
-      message: 'Call button lead',
+      message: (callModalAction === 'whatsapp') ? 'WhatsApp button lead' : 'Call button lead',
       project: 'Escon Primera',
-      source: 'Escon Primera Call Button',
+      source: (callModalAction === 'whatsapp') ? 'Escon Primera WhatsApp Button' : 'Escon Primera Call Button',
       submittedAt: new Date().toISOString()
     };
 
@@ -2291,15 +2299,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }).catch(function(){});
     }
 
-    // GTM: call capture form conversion
+    // GTM: capture form conversion
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({
-      event: 'call_capture_form_submit',
-      form_name: 'call_capture'
+      event: (callModalAction === 'whatsapp') ? 'whatsapp_capture_form_submit' : 'call_capture_form_submit',
+      form_name: (callModalAction === 'whatsapp') ? 'whatsapp_capture' : 'call_capture'
     });
 
     closeCallModal();
-    window.location.href = 'tel:+917508058594';
+    if (callModalAction === 'whatsapp') {
+      var waMsg = encodeURIComponent('Hi, I\'m ' + nameEl.value.trim() + '. I\'m interested in Escon Primera, Zirakpur. Please share more details.');
+      window.open('https://wa.me/917508058594?text=' + waMsg, '_blank');
+    } else {
+      window.location.href = 'tel:+917508058594';
+    }
   });
 
   // ============================================================
