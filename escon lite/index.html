@@ -875,6 +875,35 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </header>
 
 <!-- ============================================================
+     TRUST / PRICE STRIP — key facts visible without scrolling past hero
+============================================================ -->
+<div style="background:var(--pine);padding:0.9rem 0;">
+  <div class="container container-xl">
+    <div class="d-flex flex-wrap justify-content-center align-items-center gap-3 gap-md-4" style="color:var(--ivory);font-size:0.9rem;">
+      <span style="display:flex;align-items:center;gap:0.4rem;white-space:nowrap;">
+        <i class="bi bi-tag-fill" style="color:var(--brass);"></i>
+        <strong>Starting ₹1.30 Cr*</strong>
+      </span>
+      <span class="d-none d-sm-inline" style="color:var(--stone-line);">|</span>
+      <span style="display:flex;align-items:center;gap:0.4rem;white-space:nowrap;">
+        <i class="bi bi-patch-check-fill" style="color:var(--brass);"></i>
+        RERA Registered
+      </span>
+      <span class="d-none d-sm-inline" style="color:var(--stone-line);">|</span>
+      <span style="display:flex;align-items:center;gap:0.4rem;white-space:nowrap;">
+        <i class="bi bi-shield-check" style="color:var(--brass);"></i>
+        Debt-Free Project
+      </span>
+      <span class="d-none d-sm-inline" style="color:var(--stone-line);">|</span>
+      <span style="display:flex;align-items:center;gap:0.4rem;white-space:nowrap;">
+        <i class="bi bi-buildings-fill" style="color:var(--brass);"></i>
+        21 Acres · 12 Towers
+      </span>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      PRICE LIST
 ============================================================ -->
 <section class="section-pad" id="price">
@@ -938,6 +967,33 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <div class="price-note mt-3">
       <i class="bi bi-info-circle"></i>*Price starting from ₹1.30 Cr onwards for 2 BHK — call or WhatsApp our sales desk for current rates and offers on all unit types. GST, stamp duty, and registration are charged extra as applicable. RERA Reg. No. PBRERA-SAS79-PR0852 | PBRERA-SAS79-PR0529.
+    </div>
+
+    <div class="mt-4 p-3 p-md-4" style="background:var(--ivory-dim);border:1px solid var(--stone-line);border-radius:var(--radius);">
+      <div id="callbackFormWrap">
+        <div class="d-flex align-items-center gap-2 mb-2">
+          <i class="bi bi-telephone-outbound-fill" style="color:var(--brass);font-size:1.1rem;"></i>
+          <span style="font-family:'Cormorant',serif;font-size:1.15rem;font-weight:600;color:var(--pine);">Prefer we call you instead?</span>
+        </div>
+        <p style="font-size:0.85rem;color:var(--stone);margin-bottom:0.9rem;">Leave your number — our sales desk will call you back within 30 minutes.</p>
+        <form id="callbackForm" class="row g-2 align-items-start" novalidate>
+          <div class="col-12 col-sm-5">
+            <input type="text" class="form-control form-control-custom" id="callbackName" placeholder="Your name" autocomplete="name" required>
+          </div>
+          <div class="col-12 col-sm-4">
+            <input type="tel" class="form-control form-control-custom" id="callbackPhone" placeholder="10-digit mobile number" autocomplete="tel" maxlength="10" pattern="[6-9][0-9]{9}" required>
+          </div>
+          <div class="col-12 col-sm-3">
+            <button type="submit" class="btn btn-brass w-100 py-2" id="callbackSubmitBtn">
+              <span id="callbackSubmitText">Request Callback</span>
+            </button>
+          </div>
+          <div id="callbackPhoneError" class="col-12" style="display:none;font-size:0.75rem;color:#c0392b;"></div>
+        </form>
+      </div>
+      <div id="callbackFormSuccess" style="display:none;padding:0.5rem 0;font-size:0.9rem;color:var(--moss);">
+        <i class="bi bi-check-circle me-2"></i>Thanks! Our sales desk will call you back shortly.
+      </div>
     </div>
   </div>
 </section>
@@ -2182,6 +2238,69 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       // Show success
       priceLeadForm.style.display = 'none';
       document.getElementById('priceFormSuccess').style.display = 'block';
+    });
+  }
+
+  // ============================================================
+  // CALLBACK MINI-FORM (below Price List) — quick low-friction capture
+  // ============================================================
+  const callbackForm = document.getElementById('callbackForm');
+  if (callbackForm) {
+    const callbackPhoneInput = document.getElementById('callbackPhone');
+    if (callbackPhoneInput) {
+      ['input', 'change'].forEach(function(evt) {
+        callbackPhoneInput.addEventListener(evt, function() {
+          this.value = sanitisePhone(this.value);
+        });
+      });
+    }
+
+    callbackForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const nameEl = document.getElementById('callbackName');
+      const phoneEl = document.getElementById('callbackPhone');
+      const phoneErr = document.getElementById('callbackPhoneError');
+      phoneEl.value = sanitisePhone(phoneEl.value);
+
+      if (!nameEl.value.trim()) { nameEl.focus(); return; }
+      if (!validateIndianPhone(phoneEl.value)) {
+        phoneErr.textContent = 'Please enter a valid 10-digit Indian mobile number.';
+        phoneErr.style.display = 'block';
+        phoneEl.focus();
+        return;
+      }
+      phoneErr.style.display = 'none';
+
+      const submitBtn = document.getElementById('callbackSubmitBtn');
+      submitBtn.disabled = true;
+      document.getElementById('callbackSubmitText').textContent = 'Sending…';
+
+      const leadData = {
+        name: nameEl.value.trim(), phone: phoneEl.value.trim(),
+        email: '', unitType: '', visitDate: '', visitTime: '',
+        message: 'Callback requested from price section',
+        project: 'Escon Primera',
+        source: 'Escon Primera Callback Request',
+        submittedAt: new Date().toISOString()
+      };
+
+      if (GOOGLE_SHEET_WEB_APP_URL && GOOGLE_SHEET_WEB_APP_URL.indexOf('PASTE_YOUR') !== 0) {
+        fetch(GOOGLE_SHEET_WEB_APP_URL, {
+          method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(leadData)
+        }).catch(function(){});
+      }
+
+      // GTM: callback request conversion
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        event: 'callback_request_submit',
+        form_name: 'callback_request'
+      });
+
+      document.getElementById('callbackFormWrap').style.display = 'none';
+      document.getElementById('callbackFormSuccess').style.display = 'block';
     });
   }
 
