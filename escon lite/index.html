@@ -1959,57 +1959,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   </div>
 </div>
 
-<!-- Exit-intent popup -->
-<div id="exitIntentBackdrop" style="display:none;position:fixed;inset:0;z-index:1250;background:rgba(14,20,16,0.72);align-items:center;justify-content:center;padding:1.2rem;">
-  <div style="background:var(--ivory);border-radius:var(--radius);max-width:440px;width:100%;padding:2rem 1.8rem;position:relative;box-shadow:0 30px 70px rgba(0,0,0,0.45);">
-    <button type="button" onclick="closeExitIntent()" style="position:absolute;top:0.6rem;right:0.6rem;width:40px;height:40px;border-radius:50%;background:transparent;border:1px solid var(--stone-line);color:var(--stone);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">
-      <i class="bi bi-x"></i>
-    </button>
-    <div id="exitIntentFormWrap">
-      <span class="eyebrow">Escon Primera · Before You Go</span>
-      <h4 class="font-display mt-1 mb-1" style="font-size:1.5rem;">Wait — get the full<br>price list &amp; floor plans.</h4>
-      <div class="plan-line"></div>
-      <p style="font-size:0.87rem;color:var(--stone);margin-bottom:1.2rem;">Leave your number and we'll send you complete pricing, floor plans, and current offers on WhatsApp.</p>
-      <form id="exitIntentForm" autocomplete="on" novalidate>
-        <div class="mb-3">
-          <label class="form-label-custom" for="exitIntentName">Your Name <span style="color:var(--brass);">*</span></label>
-          <input type="text" class="form-control form-control-custom" id="exitIntentName" autocomplete="name" placeholder="Full name" required>
-        </div>
-        <div class="mb-3">
-          <label class="form-label-custom" for="exitIntentPhone">Your WhatsApp Number <span style="color:var(--brass);">*</span></label>
-          <input type="tel" class="form-control form-control-custom" id="exitIntentPhone" autocomplete="tel" placeholder="10-digit mobile number" maxlength="10" pattern="[6-9][0-9]{9}" required>
-          <div id="exitIntentPhoneError" style="display:none;font-size:0.75rem;color:#c0392b;margin-top:0.25rem;"></div>
-        </div>
-        <button type="submit" class="btn btn-brass w-100 py-3" id="exitIntentSubmitBtn">
-          <i class="bi bi-whatsapp me-2"></i><span id="exitIntentSubmitText">Send Me the Details</span>
-        </button>
-        <p class="text-center mt-2 mb-0" style="font-size:0.72rem;color:var(--stone);">By submitting, you agree to be contacted by our sales team.</p>
-      </form>
-    </div>
-    <div id="exitIntentSuccess" style="display:none;text-align:center;padding:1.5rem 0;">
-      <i class="bi bi-check-circle" style="font-size:2.5rem;color:#25D366;"></i>
-      <h4 class="font-display mt-3" style="font-size:1.3rem;">Thank you!</h4>
-      <p style="color:var(--stone);font-size:0.9rem;margin-bottom:0;">We'll send the details on WhatsApp shortly.</p>
-    </div>
-  </div>
-</div>
-
 <!-- Bootstrap 5 JS Bundle -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
 
 <script>
-  // Tracks whether the visitor has submitted ANY lead form yet — used to
-  // suppress the exit-intent popup for people who've already converted.
-  window.__hasConverted = false;
-
-  // Tracks whether a pending history state belongs to the call modal
-  // (vs. the exit-intent back-button guard) — see popstate handler below.
-  let callModalPendingClose = false;
-
-  // Push one guard state at load so the visitor's first back-press can be
-  // intercepted (for exit intent) instead of immediately leaving the page.
-  try { history.pushState({ exitGuard: true }, '', location.href); } catch (e) {}
-
   // Navbar background on scroll
   const nav = document.getElementById('mainNav');
   const backTop = document.getElementById('backTop');
@@ -2106,7 +2059,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       body: JSON.stringify(leadData)
     })
       .then(function () {
-        window.__hasConverted = true;
         const firstName = leadData.name.split(' ')[0] || 'there';
         successName.textContent = firstName;
         form.style.display = 'none';
@@ -2284,7 +2236,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
 
       // Show success
-      window.__hasConverted = true;
       priceLeadForm.style.display = 'none';
       document.getElementById('priceFormSuccess').style.display = 'block';
     });
@@ -2349,7 +2300,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
 
       document.getElementById('callbackFormWrap').style.display = 'none';
-      window.__hasConverted = true;
       document.getElementById('callbackFormSuccess').style.display = 'block';
     });
   }
@@ -2394,7 +2344,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     document.body.style.overflow = 'hidden';
     // Push a fake history state so back button closes modal instead of leaving site
     history.pushState({ callModalOpen: true }, '');
-    callModalPendingClose = true;
     setTimeout(function(){ document.getElementById('callName').focus(); }, 100);
   };
   window.closeCallModal = function(skipHistory) {
@@ -2406,27 +2355,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
   };
 
-  // Intercept browser back button — distinguishes "closing the call modal"
-  // from "a real back-press on the base page" using a flag rather than
-  // reading DOM state, since by the time this fires the modal may already
-  // have been closed by other code.
+  // Intercept browser back button
   window.addEventListener('popstate', function(e) {
-    if (callModalPendingClose) {
-      callModalPendingClose = false;
+    if (callBackdrop.style.display === 'flex') {
+      // Close modal only — do not navigate away
       closeCallModal(true);
-      return;
-    }
-    // Only treat this as exit intent if we've landed back on our own guard
-    // state — avoids hijacking normal in-page anchor-link back navigation
-    // (e.g. clicking a nav link then pressing back), which has no custom
-    // state attached and so won't match here.
-    if (e.state && e.state.exitGuard) {
-      if (exitIntentEligible()) {
-        showExitIntent();
-      }
-      // Re-arm the guard so this back-press doesn't also leave the page —
-      // pressing back again will leave normally.
-      history.pushState({ exitGuard: true }, '', location.href);
     }
   });
 
@@ -2497,7 +2430,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
 
     closeCallModal();
-    window.__hasConverted = true;
     if (callModalAction === 'whatsapp') {
       var waMsg = encodeURIComponent('Hi, I\'m ' + nameEl.value.trim() + '. I\'m interested in Escon Primera, Zirakpur. Please share more details.');
       window.open('https://wa.me/917508058594?text=' + waMsg, '_blank');
@@ -2542,7 +2474,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       });
 
       // Show success message
-      window.__hasConverted = true;
       brochureRequestForm.style.display = 'none';
       document.getElementById('brochureFormSuccess').style.display = 'block';
       // Also send to Google Sheet if configured
@@ -2561,162 +2492,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
           body: JSON.stringify(brochureLeadData)
         }).catch(function() {});
       }
-    });
-  }
-
-  // ============================================================
-  // EXIT-INTENT POPUP
-  // Desktop: fires when the cursor moves up off the top of the viewport
-  //          (the classic "about to close the tab / hit back" motion).
-  // Mobile:  there's no cursor to track, so we approximate instead with
-  //          — the tab/app being backgrounded (visibilitychange)
-  //          — a fast upward scroll back to the top after scrolling down
-  //          — a time-on-page fallback for visitors who never trigger either
-  // In all cases: never shown if a lead's already been captured, never
-  // shown more than once per visit, and never shown before the visitor
-  // has had at least a few seconds / a bit of scroll to actually engage.
-  // ============================================================
-  const exitBackdrop = document.getElementById('exitIntentBackdrop');
-  let exitIntentShown = false;
-  let pageEngagedAt = Date.now();
-  let maxScrollSeen = 0;
-
-  window.addEventListener('scroll', function() {
-    maxScrollSeen = Math.max(maxScrollSeen, window.scrollY);
-  });
-
-  function exitIntentEligible() {
-    if (exitIntentShown) return false;
-    if (window.__hasConverted) return false;
-    if (sessionStorage.getItem('exitIntentShown') === '1') return false;
-    if (callBackdrop && callBackdrop.style.display === 'flex') return false;
-    // Require a little real engagement first: at least 6s on page AND
-    // some scroll, so this never fires on a visitor who just arrived.
-    const timeOnPage = Date.now() - pageEngagedAt;
-    if (timeOnPage < 6000) return false;
-    if (maxScrollSeen < 250) return false;
-    return true;
-  }
-
-  function showExitIntent() {
-    if (!exitIntentEligible()) return;
-    exitIntentShown = true;
-    try { sessionStorage.setItem('exitIntentShown', '1'); } catch (e) {}
-
-    const formWrap = document.getElementById('exitIntentFormWrap');
-    const successBox = document.getElementById('exitIntentSuccess');
-    if (formWrap) formWrap.style.display = 'block';
-    if (successBox) successBox.style.display = 'none';
-    const form = document.getElementById('exitIntentForm');
-    if (form) form.reset();
-    const err = document.getElementById('exitIntentPhoneError');
-    if (err) err.style.display = 'none';
-
-    exitBackdrop.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-  }
-
-  window.closeExitIntent = function() {
-    exitBackdrop.style.display = 'none';
-    document.body.style.overflow = '';
-  };
-
-  exitBackdrop.addEventListener('click', function(e) {
-    if (e.target === exitBackdrop) closeExitIntent();
-  });
-
-  // --- Desktop: cursor leaving the top of the viewport ---
-  document.addEventListener('mouseleave', function(e) {
-    if (e.clientY <= 0) showExitIntent();
-  });
-
-  // --- Mobile approximation #1: tab/app backgrounded ---
-  document.addEventListener('visibilitychange', function() {
-    if (document.hidden) showExitIntent();
-  });
-
-  // --- Mobile approximation #2: fast scroll back up to the top ---
-  let lastScrollY = window.scrollY;
-  let lastScrollTime = Date.now();
-  window.addEventListener('scroll', function() {
-    const now = Date.now();
-    const dy = window.scrollY - lastScrollY;
-    const dt = now - lastScrollTime;
-    // Scrolled up quickly (velocity check) and now near the top of the page
-    if (dt > 0 && dy < -80 && (dy / dt) < -0.8 && window.scrollY < 400) {
-      showExitIntent();
-    }
-    lastScrollY = window.scrollY;
-    lastScrollTime = now;
-  });
-
-  // --- Mobile approximation #3: time-on-page safety net ---
-  setTimeout(function() { showExitIntent(); }, 45000);
-
-  // --- Submit handler ---
-  const exitIntentForm = document.getElementById('exitIntentForm');
-  if (exitIntentForm) {
-    const exitIntentPhoneInput = document.getElementById('exitIntentPhone');
-    if (exitIntentPhoneInput) {
-      ['input', 'change'].forEach(function(evt) {
-        exitIntentPhoneInput.addEventListener(evt, function() {
-          this.value = sanitisePhone(this.value);
-        });
-      });
-    }
-
-    exitIntentForm.addEventListener('submit', function(e) {
-      e.preventDefault();
-      const nameEl = document.getElementById('exitIntentName');
-      const phoneEl = document.getElementById('exitIntentPhone');
-      const phoneErr = document.getElementById('exitIntentPhoneError');
-      phoneEl.value = sanitisePhone(phoneEl.value);
-
-      if (!nameEl.value.trim()) { nameEl.focus(); return; }
-      if (!validateIndianPhone(phoneEl.value)) {
-        phoneErr.textContent = 'Please enter a valid 10-digit Indian mobile number.';
-        phoneErr.style.display = 'block';
-        phoneEl.focus();
-        return;
-      }
-      phoneErr.style.display = 'none';
-
-      const submitBtn = document.getElementById('exitIntentSubmitBtn');
-      submitBtn.disabled = true;
-      document.getElementById('exitIntentSubmitText').textContent = 'Sending…';
-
-      const leadData = {
-        name: nameEl.value.trim(), phone: phoneEl.value.trim(),
-        email: '', unitType: '', visitDate: '', visitTime: '',
-        message: 'Exit-intent popup capture',
-        project: 'Escon Primera',
-        source: 'Escon Primera Exit Intent',
-        submittedAt: new Date().toISOString()
-      };
-
-      if (GOOGLE_SHEET_WEB_APP_URL && GOOGLE_SHEET_WEB_APP_URL.indexOf('PASTE_YOUR') !== 0) {
-        fetch(GOOGLE_SHEET_WEB_APP_URL, {
-          method: 'POST', mode: 'no-cors',
-          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-          body: JSON.stringify(leadData)
-        }).catch(function(){});
-      }
-
-      const waMsg = encodeURIComponent(
-        'Hi, I am ' + nameEl.value.trim() + ' (mobile: ' + phoneEl.value.trim() + '). Please send me the full price list and floor plans for Escon Primera Zirakpur. Thank you.'
-      );
-      window.open('https://wa.me/917508058594?text=' + waMsg, '_blank');
-
-      // GTM: exit-intent conversion
-      window.dataLayer = window.dataLayer || [];
-      dataLayer.push({
-        event: 'exit_intent_form_submit',
-        form_name: 'exit_intent'
-      });
-
-      window.__hasConverted = true;
-      document.getElementById('exitIntentFormWrap').style.display = 'none';
-      document.getElementById('exitIntentSuccess').style.display = 'block';
     });
   }
 </script>
