@@ -1953,6 +1953,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     dateInput.setAttribute('min', today);
   }
 
+  if (form) {
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     e.stopPropagation();
@@ -2044,6 +2045,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         submitBtnText.textContent = 'Confirm Site Visit';
       });
   });
+  } // end if(form)
 
   // ============================================================
   // LEAD CAPTURE POP-UP + CONTENT GATES (Price List, Floor Plans, Brochure)
@@ -2262,7 +2264,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   }
 
-  document.getElementById('callCaptureForm').addEventListener('submit', function(e) {
+  const callCaptureFormEl = document.getElementById('callCaptureForm');
+  if (callCaptureFormEl) {
+  callCaptureFormEl.addEventListener('submit', function(e) {
     e.preventDefault();
     const nameEl  = document.getElementById('callName');
     const phoneEl = document.getElementById('callPhone');
@@ -2314,6 +2318,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       window.location.href = 'tel:+917508058594';
     }
   });
+  } // end if(callCaptureFormEl)
 
   // ============================================================
   const brochureRequestForm = document.getElementById('brochureRequestForm');
