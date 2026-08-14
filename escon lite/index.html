@@ -2070,7 +2070,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         dataLayer.push({
           event: 'site_visit_form_submit',
           form_name: 'site_visit',
-          unit_type: leadData.unitType
+          unit_type: leadData.unitType,
+          leadsUserData: buildLeadsUserData(leadData.name, leadData.phone, leadData.email)
         });
 
         // Send WhatsApp notification to sales team
@@ -2158,6 +2159,22 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return digits.slice(0, 10);
   }
 
+  // Enhanced Conversions (Google Ads) — builds the user-provided data object
+  // pushed alongside each lead event so Google can match conversions to the
+  // right click more accurately. Consumed by a GTM "User-Provided Data"
+  // variable feeding the Google Ads conversion tag (Google Tag Manager
+  // method). See: Google Ads > Conversions > Escon Primera - Lead Submitted
+  // > Settings > Enhanced conversions.
+  function buildLeadsUserData(name, phone, email) {
+    var parts = (name || '').trim().split(/\s+/).filter(Boolean);
+    var first = parts[0] || '';
+    var last = parts.slice(1).join(' ');
+    var data = { phone_number: '+91' + phone };
+    if (first) { data.address = last ? { first_name: first, last_name: last } : { first_name: first }; }
+    if (email) { data.email = email; }
+    return data;
+  }
+
   const pricePhoneInput = document.getElementById('pricePhone');
   if (pricePhoneInput) {
     // Use 'change' as well as 'input' so autofill triggers validation too
@@ -2233,7 +2250,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       dataLayer.push({
         event: 'price_list_form_submit',
         form_name: 'price_list',
-        unit_type: unit
+        unit_type: unit,
+        leadsUserData: buildLeadsUserData(name, phone, '')
       });
 
       // Show success
@@ -2297,7 +2315,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       window.dataLayer = window.dataLayer || [];
       dataLayer.push({
         event: 'callback_request_submit',
-        form_name: 'callback_request'
+        form_name: 'callback_request',
+        leadsUserData: buildLeadsUserData(nameEl.value.trim(), phoneEl.value.trim(), '')
       });
 
       document.getElementById('callbackFormWrap').style.display = 'none';
@@ -2427,7 +2446,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     window.dataLayer = window.dataLayer || [];
     dataLayer.push({
       event: (callModalAction === 'whatsapp') ? 'whatsapp_capture_form_submit' : 'call_capture_form_submit',
-      form_name: (callModalAction === 'whatsapp') ? 'whatsapp_capture' : 'call_capture'
+      form_name: (callModalAction === 'whatsapp') ? 'whatsapp_capture' : 'call_capture',
+      leadsUserData: buildLeadsUserData(nameEl.value.trim(), phoneEl.value.trim(), '')
     });
 
     closeCallModal();
@@ -2471,7 +2491,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       dataLayer.push({
         event: 'brochure_request_submit',
         form_name: 'brochure_request',
-        unit_type: unit
+        unit_type: unit,
+        leadsUserData: buildLeadsUserData(name, phone, '')
       });
 
       // Show success message
