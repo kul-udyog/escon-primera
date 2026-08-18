@@ -4,6 +4,11 @@
 // seconds after triggering Truecaller verification, to find out whether
 // Truecaller's async callback (see callback.js) has landed yet.
 //
+// Reads from the TRUECALLER_DB D1 database (not KV) so that the result is
+// visible immediately after callback.js writes it — D1 gives read-after-write
+// consistency, unlike Workers KV which can serve a stale cached value for
+// up to ~60 seconds after a write from a different edge location.
+//
 // Response shapes:
 //   { status: "pending" }                       — no result yet, keep polling
 //   { status: "verified", phone, name }          — visitor verified
@@ -24,17 +29,20 @@ export async function onRequestGet(context) {
     });
   }
 
-  const kv = env.TRUECALLER_KV;
-  if (!kv) {
-    return new Response(JSON.stringify({ status: 'error', message: 'kv_not_configured' }), {
+  const db = env.TRUECALLER_DB;
+  if (!db) {
+    return new Response(JSON.stringify({ status: 'error', message: 'db_not_configured' }), {
       status: 200,
       headers: jsonHeaders,
     });
   }
 
-  const record = await kv.get(requestId);
+  const row = await db
+    .prepare('SELECT status, phone, name, message FROM verifications WHERE request_id = ?1')
+    .bind(requestId)
+    .first();
 
-  if (!record) {
+  if (!row) {
     // Nothing written yet — either still pending, or the handshake never
     // arrived (e.g. Truecaller app not installed). Frontend treats
     // repeated "pending" as a timeout after its own poll budget.
@@ -44,5 +52,13 @@ export async function onRequestGet(context) {
     });
   }
 
-  return new Response(record, { status: 200, headers: jsonHeaders });
+  return new Response(
+    JSON.stringify({
+      status: row.status,
+      phone: row.phone || undefined,
+      name: row.name || undefined,
+      message: row.message || undefined,
+    }),
+    { status: 200, headers: jsonHeaders }
+  );
 }
