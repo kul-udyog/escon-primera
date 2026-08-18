@@ -14,21 +14,49 @@
 // profile fetch below is not allowed to hang — if it fails we still store
 // an "error" status and return 200 so Truecaller doesn't retry forever.
 //
-// Results are written to the TRUECALLER_KV namespace keyed by requestId,
-// with a short TTL. The frontend polls /api/truecaller/status?requestId=...
-// (see status.js) to pick up the result.
+// Results are written to the TRUECALLER_DB D1 database (table:
+// `verifications`, keyed by request_id). D1 is used instead of KV
+// deliberately: Workers KV's get() can serve a cached value for up to
+// ~60 seconds after a write from a different edge location, which made
+// the frontend's poller (see status.js) see a stale "pending" result long
+// after the real "verified" result had already landed. D1 gives
+// read-after-write consistency, so the poller sees results immediately.
 
-const RESULT_TTL_SECONDS = 600; // 10 minutes — plenty for a page visit.
+const RESULT_TTL_MS = 10 * 60 * 1000; // 10 minutes — plenty for a page visit.
+
+async function upsert(db, requestId, status, phone, message, name) {
+  await db
+    .prepare(
+      `INSERT INTO verifications (request_id, status, phone, name, message, created_at)
+       VALUES (?1, ?2, ?3, ?4, ?5, ?6)
+       ON CONFLICT(request_id) DO UPDATE SET
+         status = excluded.status,
+         phone = excluded.phone,
+         name = excluded.name,
+         message = excluded.message,
+         created_at = excluded.created_at`
+    )
+    .bind(requestId, status, phone || null, name || null, message || null, Date.now())
+    .run();
+}
 
 export async function onRequestPost(context) {
   const { request, env } = context;
 
-  const kv = env.TRUECALLER_KV;
-  if (!kv) {
+  const db = env.TRUECALLER_DB;
+  if (!db) {
     // Binding not configured — nothing we can do but acknowledge so
     // Truecaller doesn't keep retrying.
-    return new Response('KV binding missing', { status: 200 });
+    return new Response('D1 binding missing', { status: 200 });
   }
+
+  // Housekeeping: opportunistically clear out old rows so this small table
+  // doesn't grow forever. Cheap no-op most of the time since there's rarely
+  // anything old to delete; not awaited-critical so failures here don't
+  // block the actual callback handling below.
+  context.waitUntil(
+    db.prepare('DELETE FROM verifications WHERE created_at < ?1').bind(Date.now() - RESULT_TTL_MS).run().catch(() => {})
+  );
 
   let body;
   try {
@@ -45,17 +73,13 @@ export async function onRequestPost(context) {
   // 1) Handshake — overlay opened on the device. Mark pending so the
   //    frontend's poller knows verification is genuinely in flight.
   if (body.status === 'flow_invoked') {
-    await kv.put(requestId, JSON.stringify({ status: 'pending' }), {
-      expirationTtl: RESULT_TTL_SECONDS,
-    });
+    await upsert(db, requestId, 'pending');
     return new Response('OK', { status: 200 });
   }
 
   // 2) User declined verification in the Truecaller overlay.
   if (body.status === 'user_rejected') {
-    await kv.put(requestId, JSON.stringify({ status: 'rejected' }), {
-      expirationTtl: RESULT_TTL_SECONDS,
-    });
+    await upsert(db, requestId, 'rejected');
     return new Response('OK', { status: 200 });
   }
 
@@ -73,13 +97,12 @@ export async function onRequestPost(context) {
         } catch (readErr) {
           bodySnippet = '(could not read response body)';
         }
-        await kv.put(
+        await upsert(
+          db,
           requestId,
-          JSON.stringify({
-            status: 'error',
-            message: `profile_fetch_failed: HTTP ${profileRes.status} ${profileRes.statusText} — ${bodySnippet}`,
-          }),
-          { expirationTtl: RESULT_TTL_SECONDS }
+          'error',
+          null,
+          `profile_fetch_failed: HTTP ${profileRes.status} ${profileRes.statusText} — ${bodySnippet}`
         );
         return new Response('OK', { status: 200 });
       }
@@ -99,28 +122,22 @@ export async function onRequestPost(context) {
       const lastName = (profile.name && profile.name.last) || '';
       const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
 
-      await kv.put(
-        requestId,
-        JSON.stringify({ status: 'verified', phone: phoneNumber, name: fullName }),
-        { expirationTtl: RESULT_TTL_SECONDS }
-      );
+      await upsert(db, requestId, 'verified', phoneNumber, null, fullName);
 
       return new Response('OK', { status: 200 });
     } catch (err) {
-      await kv.put(
+      await upsert(
+        db,
         requestId,
-        JSON.stringify({ status: 'error', message: `exception: ${err && err.message ? err.message : String(err)}` }),
-        { expirationTtl: RESULT_TTL_SECONDS }
+        'error',
+        null,
+        `exception: ${err && err.message ? err.message : String(err)}`
       );
       return new Response('OK', { status: 200 });
     }
   }
 
   // Unrecognised payload shape — acknowledge anyway so Truecaller stops retrying.
-  await kv.put(
-    requestId,
-    JSON.stringify({ status: 'error', message: 'unknown_payload' }),
-    { expirationTtl: RESULT_TTL_SECONDS }
-  );
+  await upsert(db, requestId, 'error', null, 'unknown_payload');
   return new Response('OK', { status: 200 });
 }
