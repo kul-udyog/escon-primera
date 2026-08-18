@@ -67,9 +67,18 @@ export async function onRequestPost(context) {
       });
 
       if (!profileRes.ok) {
+        let bodySnippet = '';
+        try {
+          bodySnippet = (await profileRes.text()).slice(0, 200);
+        } catch (readErr) {
+          bodySnippet = '(could not read response body)';
+        }
         await kv.put(
           requestId,
-          JSON.stringify({ status: 'error', message: 'profile_fetch_failed' }),
+          JSON.stringify({
+            status: 'error',
+            message: `profile_fetch_failed: HTTP ${profileRes.status} ${profileRes.statusText} — ${bodySnippet}`,
+          }),
           { expirationTtl: RESULT_TTL_SECONDS }
         );
         return new Response('OK', { status: 200 });
@@ -100,7 +109,7 @@ export async function onRequestPost(context) {
     } catch (err) {
       await kv.put(
         requestId,
-        JSON.stringify({ status: 'error', message: 'exception' }),
+        JSON.stringify({ status: 'error', message: `exception: ${err && err.message ? err.message : String(err)}` }),
         { expirationTtl: RESULT_TTL_SECONDS }
       );
       return new Response('OK', { status: 200 });

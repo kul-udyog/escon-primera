@@ -2095,7 +2095,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             }
             if (data.status === 'error') {
               stopPolling();
-              setStatus(statusEl, 'Verification failed — please enter your number manually.', '#c0392b');
+              // Show the backend's detail inline so it can be reported/debugged
+              // without needing server log access.
+              const detail = data.message ? ' [' + data.message + ']' : '';
+              setStatus(statusEl, 'Verification failed — please enter your number manually.' + detail, '#c0392b');
               btn.disabled = false;
               return;
             }
