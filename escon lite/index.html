@@ -2008,7 +2008,10 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const TC_APP_NAME = 'Escon Primera';
     const TC_STATUS_ENDPOINT = '/api/truecaller/status';
     const TC_POLL_INTERVAL_MS = 3000;
-    const TC_POLL_MAX_CYCLES = 5;
+    const TC_POLL_MAX_CYCLES = 12; // 12 x 3s = 36s — Truecaller's own docs recommend
+                                    // allowing up to ~30s for the full device-app-round-trip
+                                    // (user taps Continue -> Truecaller's servers call our
+                                    // backend -> our backend fetches the profile) to complete.
     const TC_FOCUS_CHECK_DELAY_MS = 600;
 
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -2135,7 +2138,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             return;
           }
           // App opened the verification overlay — start polling for a result.
-          setStatus(statusEl, 'Waiting for you to confirm in Truecaller…', 'var(--stone)');
+          setStatus(statusEl, 'Waiting for you to confirm in Truecaller… this can take up to 30 seconds.', 'var(--stone)');
           pollCount = 0;
           poll(nonce);
         }, TC_FOCUS_CHECK_DELAY_MS);
