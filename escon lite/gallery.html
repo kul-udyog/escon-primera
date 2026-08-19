@@ -262,6 +262,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,te
     box-shadow:0 8px 24px rgba(0,0,0,0.35);
   }
   .nav-link-custom{margin:0.15rem 0;}
+  .navbar-custom{padding:0.55rem 0;}
+  .navbar-custom.scrolled{padding:0.45rem 0;}
+  .navbar-logo-img{height:32px;}
+  .navbar-custom.scrolled .navbar-logo-img{height:28px;}
+  .navbar-toggler i{font-size:1.4rem !important;}
 }
 
 /* ============================================================
@@ -648,11 +653,12 @@ footer a:hover{color:var(--brass-soft);}
   box-shadow:0 -6px 18px rgba(0,0,0,0.25);
 }
 @media (max-width:767px){
-  .mobile-enquiry-bar{display:flex;gap:0.6rem;}
-  body{padding-bottom:64px;}
+  .mobile-enquiry-bar{display:flex;gap:0.5rem;padding:0.45rem 0.9rem;}
+  .mobile-enquiry-bar .btn{padding:0.55rem 1rem;font-size:0.78rem;}
+  body{padding-bottom:52px;}
   /* lift floating buttons above the sticky Call/Book Visit bar */
-  .whatsapp-float{bottom:calc(64px + 1rem);}
-  .back-top{bottom:calc(64px + 1rem);}
+  .whatsapp-float{bottom:calc(52px + 1rem);}
+  .back-top{bottom:calc(52px + 1rem);}
 }
 
 @media (max-width:575px){
@@ -678,7 +684,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <img src="images/logo-lockup.jpg" alt="Escon Primera" class="navbar-logo-img">
     </a>
     <button class="navbar-toggler text-white" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu" aria-label="Toggle navigation">
-      <i class="bi bi-list" style="font-size:1.8rem;color:#FAFAF8;"></i>
+      <i class="bi bi-list" style="font-size:1.5rem;color:#FAFAF8;"></i>
     </button>
     <div class="collapse navbar-collapse justify-content-end" id="navMenu">
       <ul class="navbar-nav align-items-lg-center">
@@ -1438,6 +1444,141 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       }
     });
   }
+</script>
+
+<script>
+// ============================================================
+// TRUECALLER SITE-WIDE AUTO-POPUP (fires on visitor's first tap)
+// ============================================================
+// Browsers block a page from silently launching an external app the
+// instant it loads — Chrome explicitly refuses "a JavaScript timer tried
+// to open an application without a user gesture." So instead of firing on
+// page load, this fires on the very first tap/click a visitor makes
+// ANYWHERE on the page (not a dedicated button). That counts as a real
+// user gesture, so the browser allows it, and since most visitors tap or
+// scroll within a second of landing it feels close to automatic. Fires at
+// most once per browser tab (sessionStorage guard below). Android only —
+// Truecaller's mobile-web flow has no iOS/desktop equivalent, so those
+// visitors are left alone.
+(function () {
+  var TC_APP_KEY = 'yBV4v9071706830c34524a4cc6fe70981bc15';
+  var TC_APP_NAME = 'Escon Primera';
+  var TC_STATUS_ENDPOINT = '/api/truecaller/status';
+  var TC_POLL_INTERVAL_MS = 1500;
+  var TC_POLL_MAX_CYCLES = 20;
+  var TC_FOCUS_CHECK_DELAY_MS = 600;
+  var FLAG_KEY = 'tcSessionDone';
+
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  var isAndroid = /Android/.test(navigator.userAgent);
+  if (!isAndroid || isIOS) return;
+
+  try {
+    if (sessionStorage.getItem(FLAG_KEY)) return;
+  } catch (e) {
+    return; // sessionStorage unavailable (private mode etc.) — skip the ambient flow entirely
+  }
+
+  function generateNonce() {
+    if (window.crypto && crypto.randomUUID) return crypto.randomUUID().replace(/-/g, '');
+    var s = '';
+    for (var i = 0; i < 32; i++) s += Math.floor(Math.random() * 16).toString(16);
+    return s;
+  }
+
+  function buildDeepLink(nonce) {
+    var params = new URLSearchParams({
+      type: 'btmsheet',
+      requestNonce: nonce,
+      partnerKey: TC_APP_KEY,
+      partnerName: TC_APP_NAME,
+      lang: 'en',
+      privacyUrl: 'https://escon-primera.com/privacy-policy.html',
+      termsUrl: 'https://escon-primera.com/privacy-policy.html',
+      loginPrefix: 'checkContinueWith',
+      ctaPrefix: 'checkContinueWith',
+      ctaColor: '#8a6d3b',
+      ctaTextColor: '#ffffff',
+      btnShape: 'round',
+      skipOption: 'useanothernum',
+      ttl: '15000'
+    });
+    return 'truecallersdk://truesdk/web_verify?' + params.toString();
+  }
+
+  function fillIfPresent(id, value) {
+    if (!value) return;
+    var el = document.getElementById(id);
+    if (el && !el.value) el.value = value;
+  }
+
+  function showToast(text) {
+    var t = document.createElement('div');
+    t.textContent = text;
+    t.style.cssText = 'position:fixed;left:50%;bottom:1.4rem;transform:translateX(-50%);' +
+      'background:#1F3D3D;color:#F7F3EC;padding:0.7rem 1.2rem;border-radius:6px;' +
+      'font-size:0.85rem;z-index:2000;box-shadow:0 8px 24px rgba(0,0,0,0.3);' +
+      'max-width:90vw;text-align:center;opacity:0;transition:opacity .3s ease;';
+    document.body.appendChild(t);
+    requestAnimationFrame(function () { t.style.opacity = '1'; });
+    setTimeout(function () {
+      t.style.opacity = '0';
+      setTimeout(function () { t.remove(); }, 350);
+    }, 4000);
+  }
+
+  function onVerified(name, phone) {
+    try {
+      if (phone) sessionStorage.setItem('tcVerifiedPhone', phone);
+      if (name) sessionStorage.setItem('tcVerifiedName', name);
+    } catch (e) {}
+    // Best-effort autofill of whichever forms happen to exist on this page —
+    // the lead itself is already captured server-side regardless (see
+    // functions/api/truecaller/callback.js), this is just a convenience so a
+    // visitor who does go on to open a form doesn't have to retype anything.
+    ['fullName', 'brochureName', 'priceName', 'callbackName', 'callName'].forEach(function (id) {
+      fillIfPresent(id, name);
+    });
+    ['phone', 'brochurePhone', 'pricePhone', 'callbackPhone', 'callPhone'].forEach(function (id) {
+      fillIfPresent(id, phone);
+    });
+    showToast('Verified with Truecaller ✓ — thanks, we’ve got your number.');
+  }
+
+  function poll(nonce, count) {
+    fetch(TC_STATUS_ENDPOINT + '?requestId=' + encodeURIComponent(nonce))
+      .then(function (res) { return res.json(); })
+      .then(function (data) {
+        if (data.status === 'verified') {
+          onVerified(data.name, /^[0-9]{10}$/.test(data.phone || '') ? data.phone : '');
+          return;
+        }
+        if (data.status === 'rejected' || data.status === 'error') return; // ambient flow — no manual-entry nudge, just stay quiet
+        if (count >= TC_POLL_MAX_CYCLES) return; // gave up quietly
+        setTimeout(function () { poll(nonce, count + 1); }, TC_POLL_INTERVAL_MS);
+      })
+      .catch(function () {});
+  }
+
+  function trigger() {
+    try {
+      if (sessionStorage.getItem(FLAG_KEY)) return;
+      sessionStorage.setItem(FLAG_KEY, '1');
+    } catch (e) {
+      return;
+    }
+
+    var nonce = generateNonce();
+    window.location = buildDeepLink(nonce);
+
+    setTimeout(function () {
+      if (document.hasFocus()) return; // Truecaller app not installed / deep link no-op — stay silent, no error shown
+      poll(nonce, 0);
+    }, TC_FOCUS_CHECK_DELAY_MS);
+  }
+
+  document.addEventListener('click', trigger, { once: true, passive: true });
+})();
 </script>
 
 </body>

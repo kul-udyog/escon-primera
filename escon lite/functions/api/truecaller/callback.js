@@ -24,6 +24,39 @@
 
 const RESULT_TTL_MS = 10 * 60 * 1000; // 10 minutes — plenty for a page visit.
 
+// Same Google Apps Script web app every on-page form (Site Visit, Brochure,
+// Price Request, Callback, Call/WhatsApp capture) already posts leads to.
+// Reusing it here means a Truecaller verification is captured as a lead
+// immediately, server-side — it doesn't depend on the visitor's browser
+// still being on the page, still polling, or completing any form.
+const GOOGLE_SHEET_WEB_APP_URL =
+  'https://script.google.com/macros/s/AKfycbzNC3OJcfzy2rOKHTqT0m3OGmWZ_R_OlMIv0X-ImnHhgk_4OnMsJ3Fzv6cnblgMjrM2-g/exec';
+
+async function captureLead(phone, name) {
+  if (!/^[0-9]{10}$/.test(phone || '')) return; // don't log junk/partial numbers
+  const leadData = {
+    name: name || '(name not shared)',
+    phone,
+    email: '',
+    unitType: '',
+    visitDate: '',
+    visitTime: '',
+    message: 'Auto-captured via the site-wide Truecaller popup (no form filled in).',
+    project: 'Escon Primera',
+    source: 'Truecaller Auto Popup',
+    submittedAt: new Date().toISOString(),
+  };
+  try {
+    await fetch(GOOGLE_SHEET_WEB_APP_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(leadData),
+    });
+  } catch (err) {
+    // Best-effort — the verification result is already safely in D1 either way.
+  }
+}
+
 async function upsert(db, requestId, status, phone, message, name) {
   await db
     .prepare(
@@ -123,6 +156,7 @@ export async function onRequestPost(context) {
       const fullName = [firstName, lastName].filter(Boolean).join(' ').trim();
 
       await upsert(db, requestId, 'verified', phoneNumber, null, fullName);
+      context.waitUntil(captureLead(phoneNumber, fullName));
 
       return new Response('OK', { status: 200 });
     } catch (err) {
