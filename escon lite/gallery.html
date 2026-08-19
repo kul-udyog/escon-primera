@@ -1581,6 +1581,48 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .catch(function () {});
   }
 
+  // Embedded/in-app browsers -- Google app's "Website" button on a Business
+  // Profile card, WhatsApp/Instagram/Facebook's built-in browser, and
+  // Android "Custom Tabs" generally -- close themselves the instant the
+  // page inside them opens a different app. That's a platform behaviour
+  // baked into Android, not a bug in this page, and no website JS can stop
+  // it. What we CAN control is avoiding auto-firing on a visitor's random
+  // first tap in exactly those contexts, so if the tab does close it's
+  // because they deliberately chose to verify, not because they tapped a
+  // nav link and got unexpectedly bounced out. Detected via two signals:
+  //  1) document.referrer starting with "android-app://" -- set by Android
+  //     apps (confirmed in the wild for Google's own app, referrer
+  //     android-app://com.google.android.googlequicksearchbox/) when they
+  //     launch a Custom Tab.
+  //  2) Known in-app-browser user-agent tokens (Facebook, Instagram, etc).
+  function isRiskyEmbeddedContext() {
+    try {
+      if (document.referrer && document.referrer.indexOf('android-app://') === 0) return true;
+    } catch (e) {}
+    var ua = navigator.userAgent || '';
+    return /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Twitter|TikTok|Snapchat|Pinterest|LinkedInApp/i.test(ua);
+  }
+
+  // Small, deliberate "Verify" pill for risky embedded contexts -- pinned
+  // near the top so it can't collide with the bottom sticky Call/Book Visit
+  // bar or the WhatsApp/back-to-top floating buttons. Tapping it is a real
+  // click event, so it still satisfies the browser's user-gesture
+  // requirement just like the ambient first-tap flow does elsewhere.
+  function showEmbeddedVerifyPrompt() {
+    var pill = document.createElement('button');
+    pill.type = 'button';
+    pill.textContent = 'Verify with Truecaller';
+    pill.style.cssText = 'position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 4.6rem);' +
+      'transform:translateX(-50%);background:#C9A24B;color:#1F3D3D;border:none;' +
+      'padding:0.6rem 1.2rem;border-radius:999px;font-size:0.82rem;font-weight:600;' +
+      'z-index:2000;box-shadow:0 8px 20px rgba(0,0,0,0.3);cursor:pointer;white-space:nowrap;';
+    document.body.appendChild(pill);
+    pill.addEventListener('click', function () {
+      pill.remove();
+      trigger();
+    }, { once: true });
+  }
+
   function trigger() {
     try {
       if (sessionStorage.getItem(FLAG_KEY)) return;
@@ -1598,13 +1640,17 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }, TC_FOCUS_CHECK_DELAY_MS);
   }
 
-  // touchend fires the instant a visitor lifts their finger after ANY touch
-  // gesture -- including a plain scroll/swipe, which is most mobile visitors'
-  // very first action on a page (a swipe never fires 'click'). That makes
-  // this the earliest point a real browser will allow us to trigger anything.
-  // 'click' stays as a fallback for mouse/assistive-tech interactions.
-  document.addEventListener('touchend', trigger, { once: true, passive: true });
-  document.addEventListener('click', trigger, { once: true, passive: true });
+  if (isRiskyEmbeddedContext()) {
+    showEmbeddedVerifyPrompt();
+  } else {
+    // touchend fires the instant a visitor lifts their finger after ANY touch
+    // gesture -- including a plain scroll/swipe, which is most mobile visitors'
+    // very first action on a page (a swipe never fires 'click'). That makes
+    // this the earliest point a real browser will allow us to trigger anything.
+    // 'click' stays as a fallback for mouse/assistive-tech interactions.
+    document.addEventListener('touchend', trigger, { once: true, passive: true });
+    document.addEventListener('click', trigger, { once: true, passive: true });
+  }
 })();
 </script>
 
