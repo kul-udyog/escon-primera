@@ -2889,20 +2889,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }, TC_FOCUS_CHECK_DELAY_MS);
   }
 
-  // Fire on the visitor's very first tap/touch ANYWHERE on the page -- this
-  // is what makes verification feel close to automatic (true zero-tap
-  // auto-launch on page load isn't possible on any browser -- Chrome for
-  // Android explicitly blocks a script from opening an external app without
-  // a real user gesture first). Opening the Truecaller app IS the
-  // verification step itself (that's how Truecaller's One-Tap flow works),
-  // so the site briefly stepping into the background right after the tap is
-  // expected, in every browser, embedded or not -- it isn't something a
-  // trigger-method change can avoid. The lead is captured server-side the
-  // instant the visitor confirms their number in the Truecaller app (see
-  // functions/api/truecaller/callback.js), regardless of what the browser
-  // tab does afterwards.
-  document.addEventListener('touchend', trigger, { once: true, passive: true });
-  document.addEventListener('click', trigger, { once: true, passive: true });
+  // Deliberate tap ONLY -- no ambient scroll/tap listener. A plain scroll
+  // gesture ends with a `touchend` event, so listening for that (or a
+  // generic first click/tap anywhere) also fires on a visitor who was just
+  // scrolling to read the page, not trying to verify -- and that accidental
+  // fire is what was opening Truecaller (and the site stepping into the
+  // background right after) at moments visitors didn't intend. Requiring an
+  // actual tap on the visible pill removes that false trigger entirely,
+  // while still satisfying the browser's real-user-gesture requirement in
+  // one tap, in every browser, embedded or not.
   showVerifyPill();
 })();
 </script>
