@@ -646,13 +646,6 @@ footer a:hover{color:var(--brass-soft);}
 }
 .back-top.show{opacity:1;pointer-events:auto;}
 
-.tc-verify-pill{
-  position:fixed;left:50%;bottom:1.8rem;transform:translateX(-50%);z-index:1500;
-  background:#C9A24B;color:#1F3D3D;border:none;
-  padding:0.6rem 1.2rem;border-radius:999px;font-size:0.82rem;font-weight:600;
-  box-shadow:0 8px 20px rgba(0,0,0,0.3);cursor:pointer;white-space:nowrap;
-}
-
 /* sticky enquiry bar (mobile) */
 .mobile-enquiry-bar{
   display:none;position:fixed;bottom:0;left:0;right:0;z-index:998;
@@ -666,7 +659,6 @@ footer a:hover{color:var(--brass-soft);}
   /* lift floating buttons above the sticky Call/Book Visit bar */
   .whatsapp-float{bottom:calc(52px + 1rem);}
   .back-top{bottom:calc(52px + 1rem);}
-  .tc-verify-pill{bottom:calc(52px + 1rem);}
 }
 
 @media (max-width:575px){
@@ -1598,27 +1590,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return 'truecallersdk://truesdk/web_verify?' + params.toString();
   }
 
-  // Launching via a real (invisible) <a> element's .click(), instead of
-  // assigning window.location directly, matters here: this fires on the
-  // visitor's very first tap ANYWHERE on the page, which is very often a
-  // real link or button (a nav link, "Schedule a Site Visit", etc). If we
-  // set window.location ourselves at the same time the browser is also
-  // processing that tapped element's own default navigation, the two
-  // top-level navigation attempts can collide -- in testing this showed up
-  // as the page unexpectedly snapping back to whatever the visitor was on
-  // before (e.g. the Google results page). Clicking a real <a href="...">
-  // hands off to the external app without touching this document's own
-  // navigation/history at all, so it can't collide with the tapped
-  // element's normal behaviour.
-  function launchDeepLink(url) {
-    var a = document.createElement('a');
-    a.href = url;
-    a.style.display = 'none';
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () { a.remove(); }, 0);
-  }
-
   function fillIfPresent(id, value) {
     if (!value) return;
     var el = document.getElementById(id);
@@ -1673,22 +1644,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .catch(function () {});
   }
 
-  // Always-visible "Verify with Truecaller" pill near the bottom of the
-  // screen (see .tc-verify-pill in the stylesheet) -- an explicit, obvious
-  // backup trigger for anyone whose first tap/touch (below) already landed
-  // on something else, or who wants to trigger verification again.
-  function showVerifyPill() {
-    var pill = document.createElement('button');
-    pill.type = 'button';
-    pill.className = 'tc-verify-pill';
-    pill.textContent = 'Verify with Truecaller';
-    document.body.appendChild(pill);
-    pill.addEventListener('click', function () {
-      pill.remove();
-      trigger();
-    }, { once: true });
-  }
-
   function trigger() {
     try {
       if (sessionStorage.getItem(FLAG_KEY)) return;
@@ -1697,11 +1652,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return;
     }
 
-    var pill = document.querySelector('.tc-verify-pill');
-    if (pill) pill.remove();
-
     var nonce = generateNonce();
-    launchDeepLink(buildDeepLink(nonce));
+    window.location = buildDeepLink(nonce);
 
     setTimeout(function () {
       if (document.hasFocus()) return; // Truecaller app not installed / deep link no-op — stay silent, no error shown
@@ -1709,16 +1661,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }, TC_FOCUS_CHECK_DELAY_MS);
   }
 
-  // Deliberate tap ONLY -- no ambient scroll/tap listener. A plain scroll
-  // gesture ends with a `touchend` event, so listening for that (or a
-  // generic first click/tap anywhere) also fires on a visitor who was just
-  // scrolling to read the page, not trying to verify -- and that accidental
-  // fire is what was opening Truecaller (and the site stepping into the
-  // background right after) at moments visitors didn't intend. Requiring an
-  // actual tap on the visible pill removes that false trigger entirely,
-  // while still satisfying the browser's real-user-gesture requirement in
-  // one tap, in every browser, embedded or not.
-  showVerifyPill();
+  document.addEventListener('click', trigger, { once: true, passive: true });
 })();
 </script>
 
