@@ -1574,6 +1574,27 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     return 'truecallersdk://truesdk/web_verify?' + params.toString();
   }
 
+  // Launching via a real (invisible) <a> element's .click(), instead of
+  // assigning window.location directly, matters here: this fires on the
+  // visitor's very first tap ANYWHERE on the page, which is very often a
+  // real link or button (a nav link, "Schedule a Site Visit", etc). If we
+  // set window.location ourselves at the same time the browser is also
+  // processing that tapped element's own default navigation, the two
+  // top-level navigation attempts can collide -- in testing this showed up
+  // as the page unexpectedly snapping back to whatever the visitor was on
+  // before (e.g. the Google results page). Clicking a real <a href="...">
+  // hands off to the external app without touching this document's own
+  // navigation/history at all, so it can't collide with the tapped
+  // element's normal behaviour.
+  function launchDeepLink(url) {
+    var a = document.createElement('a');
+    a.href = url;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { a.remove(); }, 0);
+  }
+
   function fillIfPresent(id, value) {
     if (!value) return;
     var el = document.getElementById(id);
@@ -1637,7 +1658,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     var nonce = generateNonce();
-    window.location = buildDeepLink(nonce);
+    launchDeepLink(buildDeepLink(nonce));
 
     setTimeout(function () {
       if (document.hasFocus()) return; // Truecaller app not installed / deep link no-op — stay silent, no error shown
