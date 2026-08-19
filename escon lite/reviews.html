@@ -646,6 +646,13 @@ footer a:hover{color:var(--brass-soft);}
 }
 .back-top.show{opacity:1;pointer-events:auto;}
 
+.tc-verify-pill{
+  position:fixed;left:50%;bottom:1.8rem;transform:translateX(-50%);z-index:1500;
+  background:#C9A24B;color:#1F3D3D;border:none;
+  padding:0.6rem 1.2rem;border-radius:999px;font-size:0.82rem;font-weight:600;
+  box-shadow:0 8px 20px rgba(0,0,0,0.3);cursor:pointer;white-space:nowrap;
+}
+
 /* sticky enquiry bar (mobile) */
 .mobile-enquiry-bar{
   display:none;position:fixed;bottom:0;left:0;right:0;z-index:998;
@@ -659,6 +666,7 @@ footer a:hover{color:var(--brass-soft);}
   /* lift floating buttons above the sticky Call/Book Visit bar */
   .whatsapp-float{bottom:calc(52px + 1rem);}
   .back-top{bottom:calc(52px + 1rem);}
+  .tc-verify-pill{bottom:calc(52px + 1rem);}
 }
 
 @media (max-width:575px){
@@ -1649,41 +1657,15 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       .catch(function () {});
   }
 
-  // Embedded/in-app browsers -- Google app's "Website" button on a Business
-  // Profile card, WhatsApp/Instagram/Facebook's built-in browser, and
-  // Android "Custom Tabs" generally -- close themselves the instant the
-  // page inside them opens a different app. That's a platform behaviour
-  // baked into Android, not a bug in this page, and no website JS can stop
-  // it. What we CAN control is avoiding auto-firing on a visitor's random
-  // first tap in exactly those contexts, so if the tab does close it's
-  // because they deliberately chose to verify, not because they tapped a
-  // nav link and got unexpectedly bounced out. Detected via two signals:
-  //  1) document.referrer starting with "android-app://" -- set by Android
-  //     apps (confirmed in the wild for Google's own app, referrer
-  //     android-app://com.google.android.googlequicksearchbox/) when they
-  //     launch a Custom Tab.
-  //  2) Known in-app-browser user-agent tokens (Facebook, Instagram, etc).
-  function isRiskyEmbeddedContext() {
-    try {
-      if (document.referrer && document.referrer.indexOf('android-app://') === 0) return true;
-    } catch (e) {}
-    var ua = navigator.userAgent || '';
-    return /FBAN|FBAV|Instagram|Line\/|MicroMessenger|Twitter|TikTok|Snapchat|Pinterest|LinkedInApp/i.test(ua);
-  }
-
-  // Small, deliberate "Verify" pill for risky embedded contexts -- pinned
-  // near the top so it can't collide with the bottom sticky Call/Book Visit
-  // bar or the WhatsApp/back-to-top floating buttons. Tapping it is a real
-  // click event, so it still satisfies the browser's user-gesture
-  // requirement just like the ambient first-tap flow does elsewhere.
-  function showEmbeddedVerifyPrompt() {
+  // Always-visible "Verify with Truecaller" pill near the bottom of the
+  // screen (see .tc-verify-pill in the stylesheet) -- an explicit, obvious
+  // backup trigger for anyone whose first tap/touch (below) already landed
+  // on something else, or who wants to trigger verification again.
+  function showVerifyPill() {
     var pill = document.createElement('button');
     pill.type = 'button';
+    pill.className = 'tc-verify-pill';
     pill.textContent = 'Verify with Truecaller';
-    pill.style.cssText = 'position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 4.6rem);' +
-      'transform:translateX(-50%);background:#C9A24B;color:#1F3D3D;border:none;' +
-      'padding:0.6rem 1.2rem;border-radius:999px;font-size:0.82rem;font-weight:600;' +
-      'z-index:2000;box-shadow:0 8px 20px rgba(0,0,0,0.3);cursor:pointer;white-space:nowrap;';
     document.body.appendChild(pill);
     pill.addEventListener('click', function () {
       pill.remove();
@@ -1699,6 +1681,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       return;
     }
 
+    var pill = document.querySelector('.tc-verify-pill');
+    if (pill) pill.remove();
+
     var nonce = generateNonce();
     launchDeepLink(buildDeepLink(nonce));
 
@@ -1708,16 +1693,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }, TC_FOCUS_CHECK_DELAY_MS);
   }
 
-  // Always show the deliberate button -- never auto-fire on an arbitrary
-  // scroll/tap. Detecting every possible embedded/in-app browser (Google
-  // app, WhatsApp, Telegram, and whatever else) turned out to be a losing
-  // game: WhatsApp and Telegram, for instance, don't set the
-  // android-app:// referrer Google's own app does, so they slipped past
-  // the earlier detection and still got yanked out of the site on a plain
-  // scroll. A visible button removes the guesswork entirely -- Truecaller
-  // only ever launches when a visitor deliberately taps it, in every
-  // context, full stop.
-  showEmbeddedVerifyPrompt();
+  // Fire on the visitor's very first tap/touch ANYWHERE on the page -- this
+  // is what makes verification feel close to automatic (true zero-tap
+  // auto-launch on page load isn't possible on any browser -- Chrome for
+  // Android explicitly blocks a script from opening an external app without
+  // a real user gesture first). Opening the Truecaller app IS the
+  // verification step itself (that's how Truecaller's One-Tap flow works),
+  // so the site briefly stepping into the background right after the tap is
+  // expected, in every browser, embedded or not -- it isn't something a
+  // trigger-method change can avoid. The lead is captured server-side the
+  // instant the visitor confirms their number in the Truecaller app (see
+  // functions/api/truecaller/callback.js), regardless of what the browser
+  // tab does afterwards.
+  document.addEventListener('touchend', trigger, { once: true, passive: true });
+  document.addEventListener('click', trigger, { once: true, passive: true });
+  showVerifyPill();
 })();
 </script>
 
