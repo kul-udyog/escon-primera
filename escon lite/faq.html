@@ -1616,6 +1616,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       fillIfPresent(id, phone);
     });
     showToast('Verified with Truecaller ✓ — thanks, we’ve got your number.');
+
+    // GTM: Truecaller verification conversion -- same dataLayer pattern as
+    // every other lead form on this site (site_visit_form_submit,
+    // brochure_request_submit, etc.), so GTM can fire the same GA4/Google
+    // Ads conversion tags for a Truecaller-verified lead as it does for a
+    // filled-in form. buildLeadsUserData() is defined globally further up
+    // this page (used by the other forms' GTM pushes too).
+    try {
+      window.dataLayer = window.dataLayer || [];
+      dataLayer.push({
+        event: 'truecaller_verify_success',
+        form_name: 'truecaller_verify',
+        leadsUserData: buildLeadsUserData(name, phone, '')
+      });
+    } catch (e) {}
   }
 
   function poll(nonce, count) {
