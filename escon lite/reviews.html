@@ -1708,17 +1708,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }, TC_FOCUS_CHECK_DELAY_MS);
   }
 
-  if (isRiskyEmbeddedContext()) {
-    showEmbeddedVerifyPrompt();
-  } else {
-    // touchend fires the instant a visitor lifts their finger after ANY touch
-    // gesture -- including a plain scroll/swipe, which is most mobile visitors'
-    // very first action on a page (a swipe never fires 'click'). That makes
-    // this the earliest point a real browser will allow us to trigger anything.
-    // 'click' stays as a fallback for mouse/assistive-tech interactions.
-    document.addEventListener('touchend', trigger, { once: true, passive: true });
-    document.addEventListener('click', trigger, { once: true, passive: true });
-  }
+  // Always show the deliberate button -- never auto-fire on an arbitrary
+  // scroll/tap. Detecting every possible embedded/in-app browser (Google
+  // app, WhatsApp, Telegram, and whatever else) turned out to be a losing
+  // game: WhatsApp and Telegram, for instance, don't set the
+  // android-app:// referrer Google's own app does, so they slipped past
+  // the earlier detection and still got yanked out of the site on a plain
+  // scroll. A visible button removes the guesswork entirely -- Truecaller
+  // only ever launches when a visitor deliberately taps it, in every
+  // context, full stop.
+  showEmbeddedVerifyPrompt();
 })();
 </script>
 
