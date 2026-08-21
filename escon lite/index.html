@@ -846,8 +846,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <div class="container container-xl hero-content">
     <div class="row">
       <div class="col-lg-8">
-        <div class="hero-eyebrow">2, 3 &amp; 3+1 BHK Flats &middot; PR-7 Airport Road, Zirakpur</div>
-        <h1><span class="visually-hidden">Escon Primera, Zirakpur — </span>Where the Tricity<br>meets <em>quiet luxury.</em></h1>
+        <div class="hero-eyebrow">Escon Primera &middot; 2, 3 &amp; 3+1 BHK Flats &middot; PR-7 Airport Road, Zirakpur</div>
+        <h1>Where the Tricity<br>meets <em>quiet luxury.</em></h1>
         <div class="hero-line"></div>
         <p class="hero-sub">Escon Primera offers premium 2 BHK, 3 BHK &amp; 3+1 BHK ready-to-move flats in Zirakpur on PR-7, Airport Road — a debt-free, RERA-registered gated township by Malwa Projects, built with Mivan technology and 40+ years of construction experience.</p>
         <div class="hero-cta">
@@ -1158,10 +1158,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
               <div class="col-sm-6">
                 <label class="form-label-custom" for="brochurePhone">WhatsApp Number <span style="color:var(--brass);">*</span></label>
                 <input type="tel" class="form-control form-control-custom" id="brochurePhone" pattern="[0-9]{10}" placeholder="10-digit mobile number" autocomplete="tel" required>
-                <button type="button" id="tcVerifyBtn_brochurePhone" class="btn btn-sm mt-2" style="display:none;border:1px solid var(--brass);color:var(--brass);background:transparent;">
-                  <i class="bi bi-patch-check me-1"></i>Verify with Truecaller
-                </button>
-                <div id="tcStatus_brochurePhone" class="mt-1" style="display:none;font-size:0.78rem;"></div>
               </div>
               <div class="col-sm-6">
                 <label class="form-label-custom" for="brochureUnit">Interested In</label>
@@ -1679,10 +1675,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 <label class="form-label-custom" for="phone">Phone Number</label>
                 <input type="tel" class="form-control form-control-custom" id="phone" pattern="[0-9]{10}" placeholder="10-digit mobile number" autocomplete="tel" required>
                 <div class="invalid-feedback">Please enter a valid 10-digit number.</div>
-                <button type="button" id="tcVerifyBtn_phone" class="btn btn-sm mt-2" style="display:none;border:1px solid var(--brass);color:var(--brass);background:transparent;">
-                  <i class="bi bi-patch-check me-1"></i>Verify with Truecaller
-                </button>
-                <div id="tcStatus_phone" class="mt-1" style="display:none;font-size:0.78rem;"></div>
               </div>
               <div class="col-sm-6">
                 <label class="form-label-custom" for="email">Email Address (Optional)</label>
@@ -1999,161 +1991,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
   // Footer year
   document.getElementById('year').textContent = new Date().getFullYear();
-
-  // ============================================================
-  // TRUECALLER PHONE VERIFICATION (OTP-less)
-  // ============================================================
-  // Lets a visitor tap "Verify with Truecaller" instead of typing their
-  // number. Only offered on Android with the Truecaller app installed —
-  // Truecaller's mobile-web flow is Android-only (no iOS Safari support),
-  // and if the app isn't installed the deep link silently no-ops and we
-  // fall back to normal manual entry. Nothing here is required to submit
-  // a form; it only pre-fills the existing name/phone fields on success.
-  (function () {
-    const TC_APP_KEY = 'yBV4v9071706830c34524a4cc6fe70981bc15';
-    const TC_APP_NAME = 'Escon Primera';
-    const TC_STATUS_ENDPOINT = '/api/truecaller/status';
-    const TC_POLL_INTERVAL_MS = 1500;
-    const TC_POLL_MAX_CYCLES = 20; // 20 x 1.5s = 30s safety budget, but the backend now
-                                    // stores results in a D1 database (not KV) so the real
-                                    // result is normally visible within 1-2 polls of the
-                                    // user tapping Continue — this is just a generous ceiling.
-    const TC_FOCUS_CHECK_DELAY_MS = 600;
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    const isAndroid = /Android/.test(navigator.userAgent);
-
-    function generateNonce() {
-      if (window.crypto && crypto.randomUUID) {
-        return crypto.randomUUID().replace(/-/g, '');
-      }
-      // Fallback for older browsers — still alphanumeric, 8–64 chars.
-      let s = '';
-      for (let i = 0; i < 32; i++) s += Math.floor(Math.random() * 16).toString(16);
-      return s;
-    }
-
-    function buildDeepLink(nonce) {
-      const params = new URLSearchParams({
-        type: 'btmsheet',
-        requestNonce: nonce,
-        partnerKey: TC_APP_KEY,
-        partnerName: TC_APP_NAME,
-        lang: 'en',
-        privacyUrl: 'https://escon-primera.com/privacy-policy.html',
-        termsUrl: 'https://escon-primera.com/privacy-policy.html',
-        loginPrefix: 'checkContinueWith',
-        ctaPrefix: 'checkContinueWith',
-        ctaColor: '#8a6d3b',
-        ctaTextColor: '#ffffff',
-        btnShape: 'round',
-        skipOption: 'useanothernum',
-        ttl: '15000'
-      });
-      return 'truecallersdk://truesdk/web_verify?' + params.toString();
-    }
-
-    function setStatus(statusEl, text, color) {
-      statusEl.style.display = text ? 'block' : 'none';
-      statusEl.textContent = text || '';
-      statusEl.style.color = color || 'var(--stone)';
-    }
-
-    function initTruecallerButton(nameFieldId, phoneFieldId, buttonId, statusId) {
-      const btn = document.getElementById(buttonId);
-      const statusEl = document.getElementById(statusId);
-      const phoneEl = document.getElementById(phoneFieldId);
-      const nameEl = document.getElementById(nameFieldId);
-      if (!btn || !statusEl || !phoneEl) return;
-
-      // Only Android visitors get the button — everyone else just sees
-      // the normal manual phone field, unchanged.
-      if (!isAndroid || isIOS) return;
-      btn.style.display = 'inline-block';
-
-      let pollTimer = null;
-      let pollCount = 0;
-
-      function stopPolling() {
-        if (pollTimer) { clearTimeout(pollTimer); pollTimer = null; }
-        pollCount = 0;
-      }
-
-      function poll(nonce) {
-        pollCount++;
-        fetch(TC_STATUS_ENDPOINT + '?requestId=' + encodeURIComponent(nonce))
-          .then(function (res) { return res.json(); })
-          .then(function (data) {
-            if (data.status === 'verified') {
-              stopPolling();
-              if (data.phone && /^[0-9]{10}$/.test(data.phone)) {
-                phoneEl.value = data.phone;
-              }
-              if (data.name && !nameEl.value.trim()) {
-                nameEl.value = data.name;
-              }
-              setStatus(statusEl, 'Verified with Truecaller ✓', '#2e7d32');
-              btn.style.display = 'none';
-              return;
-            }
-            if (data.status === 'rejected') {
-              stopPolling();
-              setStatus(statusEl, 'Verification declined — please enter your number manually.', '#c0392b');
-              btn.disabled = false;
-              return;
-            }
-            if (data.status === 'error') {
-              stopPolling();
-              // Show the backend's detail inline so it can be reported/debugged
-              // without needing server log access.
-              const detail = data.message ? ' [' + data.message + ']' : '';
-              setStatus(statusEl, 'Verification failed — please enter your number manually.' + detail, '#c0392b');
-              btn.disabled = false;
-              return;
-            }
-            // still pending
-            if (pollCount >= TC_POLL_MAX_CYCLES) {
-              stopPolling();
-              setStatus(statusEl, 'Verification timed out — please enter your number manually.', '#c0392b');
-              btn.disabled = false;
-              return;
-            }
-            pollTimer = setTimeout(function () { poll(nonce); }, TC_POLL_INTERVAL_MS);
-          })
-          .catch(function () {
-            stopPolling();
-            setStatus(statusEl, 'Verification failed — please enter your number manually.', '#c0392b');
-            btn.disabled = false;
-          });
-      }
-
-      btn.addEventListener('click', function () {
-        btn.disabled = true;
-        setStatus(statusEl, 'Opening Truecaller…', 'var(--stone)');
-
-        const nonce = generateNonce();
-        const deepLink = buildDeepLink(nonce);
-        window.location = deepLink;
-
-        setTimeout(function () {
-          if (document.hasFocus()) {
-            // Page never lost focus — Truecaller app isn't installed, or
-            // the deep link didn't do anything. Fall back silently.
-            setStatus(statusEl, 'Truecaller app not found — please enter your number manually.', '#c0392b');
-            btn.disabled = false;
-            return;
-          }
-          // App opened the verification overlay — start polling for a result.
-          setStatus(statusEl, 'Waiting for you to confirm in Truecaller…', 'var(--stone)');
-          pollCount = 0;
-          poll(nonce);
-        }, TC_FOCUS_CHECK_DELAY_MS);
-      });
-    }
-
-    initTruecallerButton('fullName', 'phone', 'tcVerifyBtn_phone', 'tcStatus_phone');
-    initTruecallerButton('brochureName', 'brochurePhone', 'tcVerifyBtn_brochurePhone', 'tcStatus_brochurePhone');
-  })();
 
   // ============================================================
   // SITE VISIT FORM → GOOGLE SHEETS
@@ -2686,6 +2523,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
   }
 </script>
+
 
 </body>
 </html>
