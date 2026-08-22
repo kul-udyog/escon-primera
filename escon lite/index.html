@@ -8,6 +8,14 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-5KVCBMM7');</script>
 <!-- End Google Tag Manager -->
+<!-- If arriving via a #visit deep link (e.g. tapping "Book Site Visit" on another page),
+     open the pop-up form directly instead of letting the browser auto-scroll to the section. -->
+<script>
+  window.__openVisitOnLoad = (window.location.hash === '#visit');
+  if (window.__openVisitOnLoad) {
+    history.replaceState(null, '', window.location.pathname + window.location.search);
+  }
+</script>
 <meta charset="UTF-8">
 <meta name="google-site-verification" content="google2d1bd0cabfc43e06">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -96,7 +104,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     { "@type": "LocationFeatureSpecification", "name": "Sports Courts — Golf, Cricket, Basketball, Tennis", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Mivan Construction Technology", "value": true },
     { "@type": "LocationFeatureSpecification", "name": "Elevated Green Park", "value": true },
-    { "@type": "LocationFeatureSpecification", "name": "Clubhouse — Culture The Club", "value": true }
+    { "@type": "LocationFeatureSpecification", "name": "Clubhouse — Culture The Club", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Swimming Pool", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Banquet Hall", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Steam Room", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Mini-Theatre", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "In-House Café", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Skating Rink", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Kids Play Area", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Cycle Track", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "E-Vehicle Charging Station", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Rainwater Harvesting Well", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "Biometric Access Elevators", "value": true },
+    { "@type": "LocationFeatureSpecification", "name": "RFID-Enabled Tower Access", "value": true }
   ],
   "containsPlace": [
     {
@@ -125,6 +145,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       "name": "3+1 BHK Flat in Zirakpur — Escon Primera",
       "description": "3+1 bedroom flat with servant room in Zirakpur, 2,450 sq.ft. super area on PR-7 Airport Road.",
       "floorSize": { "@type": "QuantitativeValue", "value": "2450", "unitCode": "FTK" },
+      "numberOfRooms": 4
+    },
+    {
+      "@type": "Apartment",
+      "name": "Penthouse in Zirakpur — Escon Primera, Tower I/J/K",
+      "description": "Duplex penthouse in Zirakpur, 2,836 sq.ft. super built-up area across a lower and upper floor, Towers I, J, K.",
+      "floorSize": { "@type": "QuantitativeValue", "value": "2836", "unitCode": "FTK" },
+      "numberOfRooms": 3
+    },
+    {
+      "@type": "Apartment",
+      "name": "Penthouse in Zirakpur — Escon Primera, Tower L/O",
+      "description": "Duplex penthouse in Zirakpur, 4,285 sq.ft. super built-up area across a lower and upper floor with home theatre and staff room, Towers L, O.",
+      "floorSize": { "@type": "QuantitativeValue", "value": "4285", "unitCode": "FTK" },
       "numberOfRooms": 4
     }
   ]
@@ -210,6 +244,26 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
       "@type": "Question",
       "name": "How can I book a site visit at Escon Primera?",
       "acceptedAnswer": { "@type": "Answer", "text": "You can book a free site visit by filling the form on this page, calling +91 75080 58594, or messaging on WhatsApp. Our team will confirm your slot within the hour and can arrange complimentary pickup from nearby landmarks." }
+    },
+    {
+      "@type": "Question",
+      "name": "What amenities does Escon Primera offer?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Escon Primera's clubhouse, Culture — The Club, houses a swimming pool, fully equipped gymnasium, banquet hall, steam room, mini-theatre and an in-house café. Outdoors, residents get a basketball court, cricket pitch, tennis court, golf putting area, skating rink, foosball & air hockey arena, a kids' play area, a cycle track and 5 acres of open green space — all within the 21-acre gated campus." }
+    },
+    {
+      "@type": "Question",
+      "name": "Who is the developer behind Escon Primera?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Escon Primera is developed by Malwa Developers, a single-family-owned corporate firm with 41+ years of experience — from government offices to Escon Arena, their earlier flagship residential project in the region. The complete 21+ acre land bank for Escon Primera is registered in their name, and the firm has a dispute- and litigation-free track record." }
+    },
+    {
+      "@type": "Question",
+      "name": "What security features does Escon Primera have?",
+      "acceptedAnswer": { "@type": "Answer", "text": "The campus has 4-tier security with guards stationed in every tower, biometric access elevators, RFID-enabled tower access, and automatic boom barriers at entry points. Commercial and guest vehicles use separate entry points from resident traffic." }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the apartments at Escon Primera Vastu compliant?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — every unit follows a Vastu-compliant layout, with 6 ft wide balconies and window placement designed for ample natural sunlight and cross-ventilation throughout the home." }
     }
   ]
 }
@@ -831,7 +885,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <li class="nav-item"><a class="nav-link nav-link-custom" href="#testimonials">Testimonials</a></li>
         <li class="nav-item"><a class="nav-link nav-link-custom" href="#faq">FAQ</a></li>
         <li class="nav-item mt-2 mt-lg-0 ms-lg-2">
-          <a href="#visit" class="btn btn-brass w-100">Book Site Visit</a>
+          <a href="#visit" class="btn btn-brass w-100" onclick="if(typeof openVisitModal==='function'){openVisitModal();return false;}">Book Site Visit</a>
         </li>
       </ul>
     </div>
@@ -851,7 +905,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         <div class="hero-line"></div>
         <p class="hero-sub">Escon Primera offers premium 2 BHK, 3 BHK &amp; 3+1 BHK ready-to-move flats in Zirakpur on PR-7, Airport Road — a debt-free, RERA-registered gated township by Malwa Projects, built with Mivan technology and 40+ years of construction experience.</p>
         <div class="hero-cta">
-          <a href="#visit" class="btn btn-brass">Schedule a Site Visit</a>
+          <a href="#visit" class="btn btn-brass" onclick="if(typeof openVisitModal==='function'){openVisitModal();return false;}">Schedule a Site Visit</a>
           <a href="#price" class="btn btn-outline-ivory">View Price List</a>
         </div>
       </div>
@@ -1264,6 +1318,53 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 </section>
 
 <!-- ============================================================
+     DEVELOPER — MALWA DEVELOPERS
+============================================================ -->
+<section class="section-pad" id="developer">
+  <div class="container container-xl">
+    <div class="row g-5 align-items-center">
+      <div class="col-lg-6">
+        <div class="section-head">
+          <div class="eyebrow">The Developer</div>
+          <h2>41 years and strong —<br>meet Malwa Developers.</h2>
+          <div class="plan-line"></div>
+        </div>
+        <p style="color:var(--stone);font-size:0.97rem;line-height:1.8;">Having built everything from government offices to Escon Arena — their earlier, best-in-region residential project — Malwa Developers have established themselves as a brand to reckon with over 41+ years. Escon Primera is their next milestone, built on the complete 21+ acre land bank registered in the company's own name.</p>
+        <p style="color:var(--stone);font-size:0.97rem;line-height:1.8;">Malwa Developers is a single-family-owned corporate firm with a litigation- and dispute-free track record spanning decades — every rupee spent on construction at Escon Primera is completely debt-free, with no bank loans and no personal debts against the project.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="row g-3">
+          <div class="col-6">
+            <div style="border:1px solid var(--stone-line);border-radius:var(--radius);padding:1.6rem 1.2rem;text-align:center;">
+              <div style="font-family:'Cormorant',serif;font-weight:600;font-size:2.1rem;color:var(--brass);">21+</div>
+              <div style="font-size:0.82rem;color:var(--stone);">Acres of completely registered land bank</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="border:1px solid var(--stone-line);border-radius:var(--radius);padding:1.6rem 1.2rem;text-align:center;">
+              <div style="font-family:'Cormorant',serif;font-weight:600;font-size:2.1rem;color:var(--brass);">440+</div>
+              <div style="font-size:0.82rem;color:var(--stone);">Intricately designed world-class homes</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="border:1px solid var(--stone-line);border-radius:var(--radius);padding:1.6rem 1.2rem;text-align:center;">
+              <div style="font-family:'Cormorant',serif;font-weight:600;font-size:2.1rem;color:var(--brass);">17+</div>
+              <div style="font-size:0.82rem;color:var(--stone);">Floors built to stand the test of time</div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div style="border:1px solid var(--stone-line);border-radius:var(--radius);padding:1.6rem 1.2rem;text-align:center;">
+              <div style="font-family:'Cormorant',serif;font-weight:600;font-size:2.1rem;color:var(--brass);">880+</div>
+              <div style="font-size:0.82rem;color:var(--stone);">Dedicated parking spots for convenience</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
      LOCATION ADVANTAGES
 ============================================================ -->
 <section class="section-pad" id="location">
@@ -1664,50 +1765,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
       <div class="col-lg-7">
         <div class="visit-card">
+          <button type="button" id="visitModalCloseBtn" onclick="closeVisitModal()" aria-label="Close" style="display:none;position:absolute;top:0.6rem;right:0.6rem;width:40px;height:40px;border-radius:50%;background:transparent;border:1px solid var(--stone-line);color:var(--stone);font-size:1.1rem;cursor:pointer;align-items:center;justify-content:center;z-index:3;">
+            <i class="bi bi-x"></i>
+          </button>
           <form id="visitForm" autocomplete="on" novalidate>
             <div class="row g-3">
-              <div class="col-sm-6">
+              <div class="col-12">
                 <label class="form-label-custom" for="fullName">Full Name</label>
                 <input type="text" class="form-control form-control-custom" id="fullName" autocomplete="name" required>
                 <div class="invalid-feedback">Please enter your name.</div>
               </div>
-              <div class="col-sm-6">
+              <div class="col-12">
                 <label class="form-label-custom" for="phone">Phone Number</label>
                 <input type="tel" class="form-control form-control-custom" id="phone" pattern="[0-9]{10}" placeholder="10-digit mobile number" autocomplete="tel" required>
                 <div class="invalid-feedback">Please enter a valid 10-digit number.</div>
-              </div>
-              <div class="col-sm-6">
-                <label class="form-label-custom" for="email">Email Address (Optional)</label>
-                <input type="email" class="form-control form-control-custom" id="email" autocomplete="email">
-              </div>
-              <div class="col-sm-6">
-                <label class="form-label-custom" for="unitType">Interested In (Optional)</label>
-                <select class="form-control form-control-custom" id="unitType">
-                  <option value="" disabled selected>Choose unit type</option>
-                  <option value="2BHK">2 BHK — 1,305 sq.ft.</option>
-                  <option value="3BHK-P1">3 BHK — 1,550 sq.ft.</option>
-                  <option value="3BHK-P2">3 BHK — 2,050 sq.ft.</option>
-                  <option value="3plus1BHK">3+1 BHK — 2,450 sq.ft.</option>
-                  <option value="notsure">Not sure yet</option>
-                </select>
-              </div>
-              <div class="col-sm-6">
-                <label class="form-label-custom" for="visitDate">Preferred Date (Optional)</label>
-                <input type="date" class="form-control form-control-custom" id="visitDate">
-              </div>
-              <div class="col-sm-6">
-                <label class="form-label-custom" for="visitTime">Preferred Time (Optional)</label>
-                <select class="form-control form-control-custom" id="visitTime">
-                  <option value="" disabled selected>Choose a slot</option>
-                  <option>10:00 AM – 12:00 PM</option>
-                  <option>12:00 PM – 2:00 PM</option>
-                  <option>3:00 PM – 5:00 PM</option>
-                  <option>5:00 PM – 7:00 PM</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <label class="form-label-custom" for="message">Message (optional)</label>
-                <textarea class="form-control form-control-custom" id="message" rows="3" placeholder="Any specific requirement, e.g. floor preference, vastu, budget..."></textarea>
               </div>
               <div class="col-12 pt-2">
                 <button type="submit" class="btn btn-brass w-100 py-3" id="submitBtn">
@@ -1836,7 +1907,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
           </div>
 
-          <div class="accordion-item" style="border:1px solid var(--stone-line);border-radius:var(--radius);margin-bottom:0;background:#fff;">
+          <div class="accordion-item" style="border:1px solid var(--stone-line);border-radius:var(--radius);margin-bottom:0.75rem;background:#fff;">
             <h3 class="accordion-header">
               <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq8" style="font-family:'Inter',sans-serif;font-size:0.97rem;font-weight:600;color:var(--pine);background:#fff;border-radius:var(--radius);">
                 How do I book a free site visit?
@@ -1847,6 +1918,62 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 Fill in the site visit form on this page, or call/WhatsApp <a href="#" onclick="openCallModal();return false;" style="color:var(--brass);">+91 75080 58594</a>. Our team will confirm your slot within the hour. Complimentary pickup from nearby landmarks is available on request.
               </div>
             </div>
+          </div>
+
+          <div class="accordion-item" style="border:1px solid var(--stone-line);border-radius:var(--radius);margin-bottom:0.75rem;background:#fff;">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq9" style="font-family:'Inter',sans-serif;font-size:0.97rem;font-weight:600;color:var(--pine);background:#fff;border-radius:var(--radius);">
+                What amenities does Escon Primera offer?
+              </button>
+            </h3>
+            <div id="faq9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body" style="font-size:0.92rem;color:var(--stone);line-height:1.7;">
+                Escon Primera's clubhouse, Culture — The Club, houses a swimming pool, fully equipped gymnasium, banquet hall, steam room, mini-theatre and an in-house café. Outdoors, residents get a basketball court, cricket pitch, tennis court, golf putting area, skating rink, foosball &amp; air hockey arena, a kids' play area, a cycle track and 5 acres of open green space — all within the 21-acre gated campus.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item" style="border:1px solid var(--stone-line);border-radius:var(--radius);margin-bottom:0.75rem;background:#fff;">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq10" style="font-family:'Inter',sans-serif;font-size:0.97rem;font-weight:600;color:var(--pine);background:#fff;border-radius:var(--radius);">
+                Who is the developer behind Escon Primera?
+              </button>
+            </h3>
+            <div id="faq10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body" style="font-size:0.92rem;color:var(--stone);line-height:1.7;">
+                Escon Primera is developed by Malwa Developers, a single-family-owned corporate firm with 41+ years of experience — from government offices to Escon Arena, their earlier flagship residential project in the region. The complete 21+ acre land bank for Escon Primera is registered in their name, and the firm has a dispute- and litigation-free track record.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item" style="border:1px solid var(--stone-line);border-radius:var(--radius);margin-bottom:0.75rem;background:#fff;">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq11" style="font-family:'Inter',sans-serif;font-size:0.97rem;font-weight:600;color:var(--pine);background:#fff;border-radius:var(--radius);">
+                What security features does Escon Primera have?
+              </button>
+            </h3>
+            <div id="faq11" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body" style="font-size:0.92rem;color:var(--stone);line-height:1.7;">
+                The campus has 4-tier security with guards stationed in every tower, biometric access elevators, RFID-enabled tower access, and automatic boom barriers at entry points. Commercial and guest vehicles use separate entry points from resident traffic.
+              </div>
+            </div>
+          </div>
+
+          <div class="accordion-item" style="border:1px solid var(--stone-line);border-radius:var(--radius);margin-bottom:0;background:#fff;">
+            <h3 class="accordion-header">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq12" style="font-family:'Inter',sans-serif;font-size:0.97rem;font-weight:600;color:var(--pine);background:#fff;border-radius:var(--radius);">
+                Are the apartments at Escon Primera Vastu compliant?
+              </button>
+            </h3>
+            <div id="faq12" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+              <div class="accordion-body" style="font-size:0.92rem;color:var(--stone);line-height:1.7;">
+                Yes — every unit follows a Vastu-compliant layout, with 6 ft wide balconies and window placement designed for ample natural sunlight and cross-ventilation throughout the home.
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center mt-4">
+            <a href="faq.html" style="color:var(--brass);font-weight:600;font-size:0.9rem;">See all FAQs &rarr;</a>
           </div>
 
         </div>
@@ -1935,7 +2062,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 <div class="mobile-enquiry-bar">
   <button type="button" class="btn btn-outline-ivory flex-fill" onclick="openCallModal()"><i class="bi bi-telephone-fill me-1"></i> Call</button>
-  <a href="#visit" class="btn btn-brass flex-fill">Book Visit</a>
+  <a href="#visit" class="btn btn-brass flex-fill" onclick="if(typeof openVisitModal==='function'){openVisitModal();return false;}">Book Visit</a>
 </div>
 
 <!-- Call capture modal -->
@@ -1964,6 +2091,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       <p class="text-center mt-2 mb-0" style="font-size:0.72rem;color:var(--stone);">By submitting, you agree to be contacted by our sales team.</p>
     </form>
   </div>
+</div>
+
+<!-- Site visit pop-up modal (reuses the existing #visitForm card above — moved here on open, moved back on close) -->
+<div id="visitModalBackdrop" style="display:none;position:fixed;inset:0;z-index:1200;background:rgba(14,20,16,0.72);align-items:center;justify-content:center;padding:1.2rem;overflow-y:auto;">
+  <div id="visitModalSlot" style="max-width:560px;width:100%;margin:auto;"></div>
 </div>
 
 <!-- Bootstrap 5 JS Bundle -->
@@ -2009,13 +2141,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   const submitBtnText = document.getElementById('submitBtnText');
   const formError = document.getElementById('formError');
 
-  // Prevent past dates in date picker
-  const dateInput = document.getElementById('visitDate');
-  if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.setAttribute('min', today);
-  }
-
   if (form) {
   form.addEventListener('submit', function (e) {
     e.preventDefault();
@@ -2037,11 +2162,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     const leadData = {
       name: document.getElementById('fullName').value.trim(),
       phone: document.getElementById('phone').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      unitType: document.getElementById('unitType').value,
-      visitDate: document.getElementById('visitDate').value,
-      visitTime: document.getElementById('visitTime').value,
-      message: document.getElementById('message').value.trim(),
+      email: '',
+      unitType: '',
+      visitDate: '',
+      visitTime: '',
+      message: '',
       project: 'Escon Primera',
       source: 'Escon Primera Landing Page',
       submittedAt: new Date().toISOString()
@@ -2076,25 +2201,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         dataLayer.push({
           event: 'site_visit_form_submit',
           form_name: 'site_visit',
-          unit_type: leadData.unitType,
           leadsUserData: buildLeadsUserData(leadData.name, leadData.phone, leadData.email)
         });
 
         // Send WhatsApp notification to sales team
-        const unitLabel = document.getElementById('unitType').options[document.getElementById('unitType').selectedIndex]?.text || 'Not specified';
-        const dateVal  = leadData.visitDate  ? leadData.visitDate  : 'Not specified';
-        const timeVal  = leadData.visitTime  ? leadData.visitTime  : 'Not specified';
-        const emailVal = leadData.email      ? leadData.email      : 'Not provided';
-        const msgVal   = leadData.message    ? ('\nMessage: ' + leadData.message) : '';
         const waMsg = encodeURIComponent(
           '🏠 *New Site Visit Request — Escon Primera*\n\n' +
           '*Name:* ' + leadData.name + '\n' +
-          '*Phone:* ' + leadData.phone + '\n' +
-          '*Email:* ' + emailVal + '\n' +
-          '*Unit Interest:* ' + unitLabel + '\n' +
-          '*Preferred Date:* ' + dateVal + '\n' +
-          '*Preferred Time:* ' + timeVal +
-          msgVal + '\n\n' +
+          '*Phone:* ' + leadData.phone + '\n\n' +
           'Submitted: ' + new Date().toLocaleString('en-IN', {timeZone:'Asia/Kolkata'})
         );
         window.open('https://wa.me/917508058594?text=' + waMsg, '_blank');
@@ -2392,6 +2506,85 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   callBackdrop.addEventListener('click', function(e) {
     if (e.target === callBackdrop) closeCallModal();
   });
+
+  // ============================================================
+  // SITE VISIT MODAL — reuses the existing #visitForm card (above)
+  // by moving it into a pop-up instead of duplicating its fields
+  // or its submit logic. "Book Site Visit" / "Schedule a Site
+  // Visit" / "Book Visit" now open this pop-up directly instead of
+  // scrolling down to the on-page section.
+  // ============================================================
+  const visitModalBackdrop = document.getElementById('visitModalBackdrop');
+  const visitModalSlot = document.getElementById('visitModalSlot');
+  const visitCardEl = document.querySelector('.visit-card');
+  const visitCloseBtn = document.getElementById('visitModalCloseBtn');
+  var visitCardHome = null; // remembers where the card normally lives on the page
+
+  window.openVisitModal = function () {
+    if (!visitCardEl || !visitModalBackdrop || !visitModalSlot) return;
+
+    if (!visitCardHome) {
+      visitCardHome = { parent: visitCardEl.parentNode, nextSibling: visitCardEl.nextSibling };
+    }
+
+    // GTM: site visit CTA tapped (pop-up opened)
+    window.dataLayer = window.dataLayer || [];
+    dataLayer.push({ event: 'site_visit_button_click' });
+
+    visitModalSlot.appendChild(visitCardEl);
+    if (visitCloseBtn) visitCloseBtn.style.display = 'flex';
+    visitModalBackdrop.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+
+    // Push a fake history state so the back button closes the pop-up instead of leaving the page
+    history.pushState({ visitModalOpen: true }, '');
+
+    setTimeout(function () {
+      const firstField = document.getElementById('fullName');
+      if (firstField) firstField.focus();
+    }, 100);
+  };
+
+  window.closeVisitModal = function (skipHistory) {
+    if (!visitCardEl || !visitModalBackdrop) return;
+    visitModalBackdrop.style.display = 'none';
+    document.body.style.overflow = '';
+    if (visitCloseBtn) visitCloseBtn.style.display = 'none';
+
+    // Put the card back exactly where it came from on the page
+    if (visitCardHome) {
+      if (visitCardHome.nextSibling) {
+        visitCardHome.parent.insertBefore(visitCardEl, visitCardHome.nextSibling);
+      } else {
+        visitCardHome.parent.appendChild(visitCardEl);
+      }
+    }
+
+    if (!skipHistory && history.state && history.state.visitModalOpen) {
+      history.back();
+    }
+  };
+
+  // Intercept browser back button
+  window.addEventListener('popstate', function () {
+    if (visitModalBackdrop && visitModalBackdrop.style.display === 'flex') {
+      closeVisitModal(true);
+    }
+  });
+
+  if (visitModalBackdrop) {
+    visitModalBackdrop.addEventListener('click', function (e) {
+      if (e.target === visitModalBackdrop) closeVisitModal();
+    });
+  }
+
+  // If arriving here via a #visit deep link from another page's CTA
+  // (e.g. amenities.html → index.html#visit), open the pop-up directly
+  // instead of letting the browser auto-scroll to the section.
+  if (window.__openVisitOnLoad) {
+    window.scrollTo(0, 0);
+    openVisitModal();
+  }
 
   const callPhoneInput = document.getElementById('callPhone');
   if (callPhoneInput) {
